@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmos & Psyche — A Course in Richard Tarnas's Archetypal Astrology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #faf7f2;
+    --bg-card:   #ffffff;
+    --bg-tinted: #f3ede3;
+    --ink:       #1a1510;
+    --ink-mid:   #3d3628;
+    --ink-soft:  #6b6050;
+    --ink-faint: #9a8f80;
+    --gold:      #8a6000;
+    --gold-mid:  #b07c10;
+    --gold-line: rgba(140,96,0,0.18);
+    --green:     #2a7040;
+    --rose:      #8a2840;
+    --accent:    #1a5878;
+    --border:    rgba(140,96,0,0.15);
+    --shadow:    rgba(30,20,10,0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  @media print {
+    .toolbar, .progress-bar-outer, .cross-link-bar, .note-toggle-btn, .module-note-area, .complete-btn, footer { display: none !important; }
+    .module-body { display: block !important; }
+    .module { box-shadow: none; border: 0.5px solid #ccc; break-inside: avoid; }
+  }
+
+  /* ---- TOOLBAR ---- */
+  .toolbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(250,247,242,0.97);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.65rem 2rem;
+    display: flex; align-items: center; gap: 0.8rem;
+    box-shadow: 0 1px 8px var(--shadow);
+  }
+  .search-input {
+    flex: 1;
+    background: var(--bg-tinted);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.4em 0.9em;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input::placeholder { color: var(--ink-faint); }
+  .search-input:focus { border-color: var(--gold); }
+  .filter-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    border: 1px solid var(--border);
+    background: none;
+    cursor: pointer;
+    padding: 0.3em 0.75em;
+    border-radius: 4px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .filter-btn:hover { color: var(--ink); border-color: var(--gold); background: var(--bg-tinted); }
+  .filter-btn.active { color: var(--ink); border-color: var(--gold); background: rgba(140,96,0,0.08); }
+  .filter-btn.skeptic-active { color: var(--green); border-color: var(--green); background: rgba(42,112,64,0.06); }
+  .toolbar-sep { width: 1px; height: 18px; background: var(--border); flex-shrink: 0; }
+  .expand-all-btn, .print-btn {
+    font-family: 'DM Mono', monospace; font-size: 0.62rem;
+    color: var(--ink-faint); border: none; background: none;
+    cursor: pointer; padding: 0.3em 0.4em; transition: color 0.15s; white-space: nowrap;
+  }
+  .expand-all-btn:hover, .print-btn:hover { color: var(--gold); }
+
+  /* ---- LAYOUT ---- */
+  .wrapper {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+  }
+
+  /* ---- PROGRESS ---- */
+  .progress-bar-outer {
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.4rem;
+    background: var(--bg-tinted);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .progress-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-soft); white-space: nowrap; }
+  .progress-track { flex: 1; height: 4px; background: rgba(140,96,0,0.12); border-radius: 2px; overflow: hidden; }
+  .progress-fill-bar { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.4s ease; width: 0%; }
+  .progress-count { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--ink-soft); white-space: nowrap; }
+
+  /* ---- CROSS LINK ---- */
+  .cross-link-bar {
+    margin: 1rem 0;
+    padding: 0.75rem 1.4rem;
+    background: rgba(26,88,120,0.05);
+    border: 1px solid rgba(26,88,120,0.15);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  }
+  .cross-link-text { font-size: 0.88rem; color: var(--ink-soft); font-style: italic; }
+  .cross-link-btn {
+    font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em;
+    color: var(--accent); border: 1px solid rgba(26,88,120,0.25); background: none;
+    cursor: pointer; padding: 0.3em 0.8em; border-radius: 4px; transition: all 0.15s; white-space: nowrap;
+  }
+  .cross-link-btn:hover { background: rgba(26,88,120,0.06); border-color: var(--accent); }
+
+  /* ---- HERO ---- */
+  .hero {
+    text-align: center;
+    padding: 5rem 0 3.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .eyebrow {
+    font-family: 'DM Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold-mid); margin-bottom: 1.5rem;
+  }
+  .hero h1 { font-size: clamp(2.6rem, 6vw, 4.5rem); font-weight: 300; line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 0.4rem; color: var(--ink); }
+  .hero h1 em { font-style: italic; color: var(--gold); }
+  .subtitle { font-size: 1.05rem; font-weight: 300; color: var(--ink-soft); margin-top: 1rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+  .author-tag {
+    display: inline-block; margin-top: 2rem;
+    font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.15em;
+    color: var(--ink-faint); border: 1px solid var(--border); padding: 0.4em 1em; border-radius: 4px;
+  }
+
+  /* ---- SKEPTIC BAR ---- */
+  .skeptic-bar {
+    margin: 1.5rem 0 2rem;
+    padding: 1.2rem 1.6rem;
+    background: rgba(42,112,64,0.05);
+    border-left: 3px solid var(--green);
+    font-size: 0.95rem; font-style: italic; color: var(--ink-soft);
+    border-radius: 0 6px 6px 0;
+  }
+  .skeptic-bar strong { font-style: normal; color: var(--green); font-weight: 600; }
+
+  /* ---- SECTION LABELS ---- */
+  .section-label {
+    font-family: 'DM Mono', monospace; font-size: 0.6rem;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold); margin-top: 3.5rem; margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--gold-line); }
+
+  /* ---- MODULE CARDS ---- */
+  .module {
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-card);
+    box-shadow: 0 2px 8px var(--shadow);
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .module:hover { box-shadow: 0 4px 16px var(--shadow); border-color: rgba(140,96,0,0.28); }
+  .module.completed { border-left: 4px solid var(--green); }
+  .module.hidden { display: none; }
+
+  .module-header { display: flex; align-items: flex-start; gap: 1.2rem; padding: 1.5rem 1.6rem; cursor: pointer; user-select: none; }
+  .module-number { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--ink-faint); letter-spacing: 0.1em; padding-top: 0.3rem; flex-shrink: 0; width: 2rem; }
+  .module.completed .module-number { color: var(--green); }
+  .module-title-block { flex: 1; }
+  .module-title { font-size: 1.25rem; font-weight: 400; line-height: 1.3; color: var(--ink); }
+  .module-title em { color: var(--gold); font-style: italic; }
+  .module-hook { font-size: 0.88rem; color: var(--ink-soft); margin-top: 0.25rem; font-style: italic; }
+  .module-meta { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.35rem; }
+  .skeptic-tag {
+    font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.08em;
+    color: var(--green); border: 1px solid rgba(42,112,64,0.3);
+    padding: 0.1em 0.45em; border-radius: 3px; background: rgba(42,112,64,0.05);
+  }
+  .new-tag {
+    font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.08em;
+    color: var(--gold); border: 1px solid rgba(140,96,0,0.25);
+    padding: 0.1em 0.45em; border-radius: 3px; background: rgba(140,96,0,0.05);
+  }
+  .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.4rem; flex-shrink: 0; }
+  .chevron { font-size: 0.7rem; color: var(--ink-faint); transition: transform 0.25s; }
+  .module.open .chevron { transform: rotate(180deg); }
+  .complete-btn {
+    font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.06em;
+    color: var(--ink-faint); border: 1px solid var(--border); background: none;
+    cursor: pointer; padding: 0.15em 0.55em; border-radius: 3px; transition: all 0.15s;
+  }
+  .complete-btn:hover { color: var(--green); border-color: var(--green); }
+  .module.completed .complete-btn { color: var(--green); border-color: var(--green); background: rgba(42,112,64,0.06); }
+
+  .module-body { display: none; padding: 0 1.6rem 1.8rem 3.8rem; border-top: 1px solid var(--border); }
+  .module.open .module-body { display: block; }
+  .module-body p { font-size: 1rem; color: var(--ink-mid); margin-top: 1.1rem; line-height: 1.8; }
+  .module-body strong { color: var(--ink); font-weight: 600; }
+
+  /* ---- NOTES ---- */
+  .note-toggle-btn {
+    display: inline-block; margin-top: 1.4rem;
+    font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em;
+    color: var(--ink-faint); border: 1px solid var(--border); background: none;
+    cursor: pointer; padding: 0.25em 0.7em; border-radius: 3px; transition: all 0.15s;
+  }
+  .note-toggle-btn:hover { color: var(--gold); border-color: var(--gold-line); }
+  .note-toggle-btn.has-note { color: var(--gold-mid); border-color: rgba(140,96,0,0.3); }
+  .module-note-area { display: none; margin-top: 0.7rem; }
+  .module-note-area.open { display: block; }
+  .note-textarea {
+    width: 100%; background: var(--bg-tinted); border: 1px solid var(--border);
+    border-radius: 4px; color: var(--ink-mid);
+    font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; line-height: 1.6;
+    padding: 0.8rem 1rem; resize: vertical; min-height: 80px; outline: none; transition: border-color 0.15s;
+  }
+  .note-textarea:focus { border-color: var(--gold); }
+  .note-textarea::placeholder { color: var(--ink-faint); font-style: italic; }
+  .note-saved { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--green); margin-top: 0.25rem; opacity: 0; transition: opacity 0.3s; }
+
+  /* ---- LISTS ---- */
+  .topics-list { margin-top: 1.2rem; list-style: none; }
+  .topics-list li {
+    font-size: 0.92rem; color: var(--ink-soft);
+    padding: 0.4rem 0 0.4rem 1.2rem;
+    border-bottom: 1px solid rgba(140,96,0,0.06);
+    position: relative;
+  }
+  .topics-list li::before { content: '—'; position: absolute; left: 0; color: var(--gold-mid); }
+  .topics-list li strong { color: var(--ink-mid); }
+
+  /* ---- SOURCE CHIPS ---- */
+  .source-chip {
+    display: inline-block; margin-top: 1rem;
+    font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em;
+    color: var(--accent); border: 1px solid rgba(26,88,120,0.2);
+    padding: 0.2em 0.65em; border-radius: 3px; margin-right: 0.4rem;
+    background: rgba(26,88,120,0.04);
+  }
+  .tag-row { margin-top: 1rem; }
+
+  /* ---- PLANET GRID ---- */
+  .planet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0.8rem; margin-top: 1.2rem; }
+  .planet-card { padding: 1rem 1.2rem; background: var(--bg-tinted); border: 1px solid var(--border); border-radius: 6px; }
+  .planet-name { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
+  .planet-desc { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.6; }
+
+  /* ---- CORRELATION TABLE ---- */
+  .corr-fb {
+    font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.06em;
+    color: var(--ink-soft); border: 1px solid var(--border); background: none;
+    cursor: pointer; padding: 0.22em 0.6em; border-radius: 3px; transition: all 0.15s;
+  }
+  .corr-fb:hover { color: var(--ink); border-color: var(--gold-line); background: var(--bg-tinted); }
+  .corr-fb.active { color: var(--ink); border-color: var(--gold); background: rgba(140,96,0,0.07); font-weight: 400; }
+  .corr-row {
+    display: grid; grid-template-columns: 6.5rem 7rem 1fr;
+    border-bottom: 1px solid rgba(140,96,0,0.07); align-items: stretch; font-size: 0.9rem; transition: background 0.1s;
+  }
+  .corr-row:hover { background: var(--bg-tinted); }
+  .corr-dates { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--ink-soft); padding: 0.7rem 0.8rem 0.7rem 0; line-height: 1.4; border-right: 1px solid rgba(140,96,0,0.08); }
+  .corr-pair { font-family: 'DM Mono', monospace; font-size: 0.6rem; padding: 0.7rem 0.8rem; border-right: 1px solid rgba(140,96,0,0.06); display: flex; flex-direction: column; gap: 0.15rem; }
+  .corr-pair-name { letter-spacing: 0.04em; font-weight: 400; }
+  .corr-pair-aspect { color: var(--ink-faint); font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; }
+  .corr-content { padding: 0.7rem 0 0.7rem 0.8rem; }
+  .corr-event { color: var(--ink-mid); line-height: 1.55; margin-bottom: 0.2rem; font-size: 0.9rem; }
+  .corr-quality { font-size: 0.78rem; color: var(--ink-faint); font-style: italic; }
+  .corr-header {
+    display: grid; grid-template-columns: 6.5rem 7rem 1fr;
+    font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-faint);
+    padding-bottom: 0.4rem; border-bottom: 1px solid var(--gold-line); margin-bottom: 0.2rem;
+  }
+  .corr-header span:nth-child(2), .corr-header span:nth-child(3) { padding-left: 0.8rem; }
+
+  /* ---- TIMELINE ---- */
+  .timeline-entry { display: flex; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid rgba(140,96,0,0.08); align-items: flex-start; }
+  .tl-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 0.45rem; }
+  .tl-dates { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--gold-mid); flex-shrink: 0; width: 5rem; padding-top: 0.2rem; line-height: 1.4; }
+  .tl-content { flex: 1; }
+  .tl-title { font-size: 0.96rem; font-weight: 500; color: var(--ink); margin-bottom: 0.25rem; }
+  .tl-body { font-size: 0.88rem; color: var(--ink-soft); line-height: 1.7; }
+  .tl-mirror { font-family: 'DM Mono', monospace; font-size: 0.58rem; color: var(--ink-faint); margin-top: 0.35rem; }
+
+  /* ---- PULL QUOTES ---- */
+  .pull-quote {
+    margin: 3rem 0; padding: 1.8rem 2.2rem;
+    border-left: 3px solid var(--gold-line);
+    background: var(--bg-tinted); border-radius: 0 6px 6px 0;
+    font-size: 1.25rem; font-weight: 300; font-style: italic;
+    color: var(--ink-mid); line-height: 1.6;
+  }
+  .pull-quote cite { display: block; margin-top: 0.7rem; font-size: 0.72rem; font-style: normal; font-family: 'DM Mono', monospace; letter-spacing: 0.08em; color: var(--ink-faint); }
+
+  /* ---- READING PATH ---- */
+  .reading-path { margin-top: 1.2rem; }
+  .book-entry { display: flex; gap: 1.2rem; align-items: flex-start; padding: 1rem 0; border-bottom: 1px solid rgba(140,96,0,0.08); }
+  .book-num { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--gold-mid); padding-top: 0.1rem; flex-shrink: 0; width: 1.6rem; }
+  .book-info { flex: 1; }
+  .book-title { font-size: 1rem; font-style: italic; color: var(--ink); font-weight: 300; }
+  .book-desc { font-size: 0.88rem; color: var(--ink-soft); margin-top: 0.2rem; }
+
+  /* ---- NO RESULTS ---- */
+  .no-results { text-align: center; padding: 3rem; font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--ink-faint); display: none; }
+
+  /* ---- FOOTER ---- */
+  footer { margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em; color: var(--ink-faint); }
+
+  .divider { height: 1px; background: var(--gold-line); margin: 2.5rem 0; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <input type="text" class="search-input" id="search-input" placeholder="Search modules…" oninput="doSearch()" />
+  <button class="filter-btn" id="filter-skeptic" onclick="toggleSkepticFilter()">For Miriam</button>
+  <div class="toolbar-sep"></div>
+  <button class="filter-btn" id="filter-all" onclick="clearFilters()">All</button>
+  <div class="toolbar-sep"></div>
+  <button class="expand-all-btn" onclick="expandAll()">Expand all</button>
+  <div class="toolbar-sep"></div>
+  <button class="print-btn" onclick="window.print()">⎙ Print</button>
+</div>
+
+<div class="wrapper">
+
+  <header class="hero">
+    <p class="eyebrow">A Self-Guided Course · 12 Modules</p>
+    <h1><em>Cosmos</em> and Psyche<br>The Astrological Work of</h1>
+    <h1>Richard Tarnas</h1>
+    <p class="subtitle">From Western intellectual history to archetypal cosmology — a serious engagement with a controversial thinker</p>
+    <span class="author-tag">Cultural Historian · CIIS · Esalen · Harvard</span>
+  </header>
+
+  <div class="progress-bar-outer">
+    <span class="progress-label">Progress</span>
+    <div class="progress-track"><div class="progress-fill-bar" id="prog-fill"></div></div>
+    <span class="progress-count" id="prog-count">0 / 12</span>
+  </div>
+
+  <div class="cross-link-bar">
+    <span class="cross-link-text">Reading course. Each module also has a full narrated audio lecture.</span>
+    <button class="cross-link-btn" onclick="alert('Open tarnas_audio_course.html for the audio version')">▶ Audio Course →</button>
+  </div>
+
+  <div class="skeptic-bar">
+    <strong>For the skeptic:</strong> Tarnas is a Harvard-trained cultural historian, not a sun-sign astrologer. Whether his conclusions hold, his <em>questions</em> — about meaning, pattern, and the cosmos-consciousness relationship — are philosophically serious. Use <strong>"For Miriam"</strong> above to filter to skeptic-friendly modules only.
+  </div>
+
+  <div class="no-results" id="no-results">No modules match your search.</div>
+
+  <p class="section-label">Part One · Foundations</p>
+
+  <div class="module" id="mod1" data-skeptic="true" data-search="who is tarnas scholar harvard esalen biography background">
+    <div class="module-header" onclick="toggle('mod1')">
+      <span class="module-number">01</span>
+      <div class="module-title-block">
+        <div class="module-title">Who Is Richard Tarnas?<br><em>The Scholar Behind the Astrologer</em></div>
+        <div class="module-hook">Context before content — why this thinker deserves a serious reading</div>
+        <div class="module-meta"><span class="skeptic-tag">Skeptic-friendly</span></div>
+      </div>
+      <div class="header-right"><span class="chevron">▼</span><button class="complete-btn" onclick="markComplete(event,'mod1')">✓ Done</button></div>
+    </div>
+    <div class="module-body">
+      <p>Richard Tarnas (b. 1950, Geneva) is not a figure from the astrology section of a bookshop. He entered Harvard in 1968, graduated cum laude in 1972, and completed a PhD at Saybrook Institute in 1976 focused on psychedelic therapy. He spent the next decade at Esalen Institute in Big Sur, working directly with Stanislav Grof, Joseph Campbell, Gregory Bateson, Elizabeth Kübler-Ross, and James Hillman — arguably the most concentrated intellectual community in late-20th-century American counterculture.</p>
+      <p>His first book, <em>The Passion of the Western Mind</em> (1991), was not about astrology at all. It became a bestseller and remained on university syllabi for decades. It is a narrative masterpiece of intellectual history tracing Western thought from ancient Greece through postmodernism. Only after establishing those credentials did Tarnas turn his primary attention to archetypal astrology.</p>
+      <p>Understanding this sequence is essential. <em>Cosmos and Psyche</em> (2006) is written not by a believer-first astrologer but by someone who spent 30 years skeptically testing a hypothesis before publishing it.</p>
+      <ul class="topics-list">
+        <li>Harvard education (1968–1972), AB cum laude</li>
+        <li>PhD, Saybrook Institute, 1976 — psychedelic therapy</li>
+        <li>Esalen Institute, director of programs 1974–1984</li>
+        <li>Founding director, Philosophy, Cosmology &amp; Consciousness — CIIS</li>
+        <li>Colleague of Grof, Campbell, Hillman, Bateson</li>
+        <li>Now Professor Emeritus, CIIS — retired 2024 to complete new writing</li>
+      </ul>
+      <div class="tag-row"><span class="source-chip">Biography</span><span class="source-chip">CIIS 2024 lecture</span></div>
+      <button class="note-toggle-btn" id="ntb-mod1" onclick="toggleNote('mod1')">+ Add note</button>
+      <div class="module-note-area" id="note-mod1"><textarea class="note-textarea" id="textarea-mod1" placeholder="Your notes…" oninput="saveNote('mod1')"></textarea><div class="note-saved" id="saved-mod1">Saved</div></div>
+    </div>
+  </div>
+
+  <div class="module" id="mod2" data-skeptic="true" data-search="passion western mind intellectual history enlightenment romanticism epilogue disenchantment">
+    <div class="module-header" onclick="toggle('mod2')">
+      <span class="module-number">02</span>
+      <div class="module-title-block">
+        <div class="module-title"><em>The Passion of the Western Mind</em><br>The Necessary Prologue</div>
+        <div class="module-hook">Start here — this is the foundation everything else rests on</div>
+        <div class="module-meta"><span class="skeptic-tag">Skeptic-friendly</span></div>
+      </div>
+      <div class="header-right"><span class="chevron">▼</span><button class="complete-btn" onclick="markComplete(event,'mod2')">✓ Done</button></div>
+    </div>
+    <div class="module-body">
+      <p><em>The Passion of the Western Mind</em> (1991) narrates how Western humans came to think the way they do, from Homeric cosmology through Plato, the Scientific Revolution, the Enlightenment, Romanticism, and the postmodern world. The central argument: modernity arrived at its current condition through a specific intellectual arc that produced what Weber called the "disenchantment" of the world — the universe became a mechanism, not a home.</p>
+      <p>The Epilogue, "The Transformation of the Western Mind," proposes a resolution: a "participatory" epistemology in which the human mind and cosmos are not fundamentally separate. This is the philosophical problem that archetypal astrology, for Tarnas, represents one possible approach to solving. <strong>For the skeptic: this book contains no astrology whatsoever.</strong> Read it first.</p>
+      <ul class="topics-list">
+        <li>Ancient Greek cosmology — the ensouled universe</li>
+        <li>The Scientific Revolution — disenchantment and its costs</li>
+        <li>Kant, Hegel, and the Romantic rebellion against rationalism</li>
+        <li>Nietzsche, Freud, Jung — the turn inward</li>
+        <li>The Epilogue: participatory epistemology as a way forward</li>
+      </ul>
+      <div class="tag-row"><span class="source-chip">Primary Text</span><span class="source-chip">Ballantine Books, 1991</span></div>
+      <button class="note-toggle-btn" id="ntb-mod2" onclick="toggleNote('mod2')">+ Add note</button>
+      <div class="module-note-area" id="note-mod2"><textarea class="note-textarea" id="textarea-mod2" placeholder="Your notes…" oninput="saveNote('mod2')"></textarea><div class="note-saved" id="saved-mod2">Saved</div></div>
+    </div>
+  </div>
+
+  <div class="pull-quote">
+    "The world is not an it but a thou — not a dead mechanism but a living mystery."
+    <cite>— Richard Tarnas, paraphrasing the participatory turn</cite>
+  </div>
+
+  <p class="section-label">Part Two · The Archetypal Framework</p>
+
+  <div class="module" id="mod3" data-skeptic="true" data-search="archetype plato jung hillman synchronicity philosophy what is">
+    <div class="module-header" onclick="toggle('mod3')">
+      <span class="module-number">03</span>
+      <div class="module-title-block">
+        <div class="module-title">What Is an Archetype?<br><em>From Plato to Jung to the Planets</em></div>
+        <div class="module-hook">The philosophical scaffolding — before engaging the astrology, understand this</div>
+        <div class="module-meta"><span class="skeptic-tag">Skeptic-friendly</span></div>
+      </div>
+      <div class="header-right"><span class="chevron">▼</span><button class="complete-btn" onclick="markComplete(event,'mod3')">✓ Done</button></div>
+    </div>
+    <div class="module-body">
+      <p>For Plato, archetypes are universal Forms — the ideal patterns that particular things imperfectly instantiate. For Jung, archetypes are universal psychological patterns embedded in the collective unconscious — the Hero, the Shadow, the Self — manifest across cultures in myth, dream, and art. Tarnas synthesizes these: the planetary archetypes are neither purely transcendent nor purely psychological. They describe universal patterns manifesting simultaneously in the external world and the inner world.</p>
+      <p>In his 2024 CIIS lecture, Tarnas described them as "powerful, numinous — they shape and inform things from both the interior psyche and the outer world. They can be seen as gods and goddesses, as Platonic transcendent principles, as Jungian archetypes. But they transcend the human. They seem to be cosmically grounded, in the cosmos and the more-than-human world."</p>
+      <ul class="topics-list">
+        <li>Plato's Theory of Forms — archetypes as transcendent universals</li>
+        <li>Jung's collective unconscious — archetypes as psychological universals</li>
+        <li>James Hillman's archetypal psychology — polytheistic imagination</li>
+        <li>Tarnas's synthesis: archetypes as simultaneously inner and outer</li>
+        <li>Synchronicity (Jung) as explanatory framework — and its limits</li>
+      </ul>
+      <div class="tag-row"><span class="source-chip">Philosophical Context</span><span class="source-chip">Cosmos and Psyche, Ch. 1–2</span></div>
+      <button class="note-toggle-btn" id="ntb-mod3" onclick="toggleNote('mod3')">+ Add note</button>
+      <div class="module-note-area" id="note-mod3"><textarea class="note-textarea" id="textarea-mod3" placeholder="Your notes…" oninput="saveNote('mod3')"></textarea><div class="note-saved" id="saved-mod3">Saved</div></div>
+    </div>
+  </div>
+
+  <div class="module" id="mod4" data-skeptic="false" data-search="planetary archetypes saturn uranus neptune pluto jupiter mars symbols">
+    <div class="module-header" onclick="toggle('mod4')">
+      <span class="module-number">04</span>
+      <div class="module-title-block">
+        <div class="module-title">The Planetary Archetypes<br><em>A Symbolic Dictionary</em></div>
+        <div class="module-hook">The vocabulary you need before the case studies</div>
+      </div>
+      <div class="header-right"><span class="chevron">▼</span><button class="complete-btn" onclick="markComplete(event,'mod4')">✓ Done</button></div>
+    </div>
+    <div class="module-body">
+      <p>Tarnas works primarily with the outer planets — Uranus, Neptune, Pluto — because their slow movement creates multi-year "world transits" he correlates with large-scale cultural periods. In his 2024 lecture he was explicit: the research is most reliable on major aspects (conjunctions, oppositions, squares, trines) among the outer planets. Sign-by-sign analysis is more speculative.</p>
+      <div class="planet-grid">
+        <div class="planet-card"><div class="planet-name">Saturn ♄</div><div class="planet-desc">Structure, limitation, time, karma, maturation, tradition, the weight of necessity. The reality principle.</div></div>
+        <div class="planet-card"><div class="planet-name">Uranus / Prometheus ♅</div><div class="planet-desc">Liberation, revolution, sudden awakening, technology, the trickster, Promethean fire. The archetype that breaks old forms. (See Module 6.)</div></div>
+        <div class="planet-card"><div class="planet-name">Neptune ♆</div><div class="planet-desc">Dissolution, mysticism, idealism, the oceanic, spiritual longing, romantic transcendence — and also illusion, propaganda, and collective delusion.</div></div>
+        <div class="planet-card"><div class="planet-name">Pluto ♇</div><div class="planet-desc">Depth, transformation, death and rebirth, power, the underworld, compulsion. The volcanic force that erupts what had been buried.</div></div>
+        <div class="planet-card"><div class="planet-name">Jupiter ♃</div><div class="planet-desc">Expansion, abundance, cultural creativity, philosophical buoyancy — and inflation, overreach, the shadow of success.</div></div>
+        <div class="planet-card"><div class="planet-name">Mars ♂</div><div class="planet-desc">Drive, assertion, conflict, courage, the warrior principle. Initiative and aggression.</div></div>
+      </div>
+      <p style="margin-top:1rem; font-size:0.88rem; color:var(--ink-faint); font-style:italic;">Each archetype can be enacted in many different ways, all faithful to its core essence. The archetype doesn't determine which face appears — that's where human freedom operates.</p>
+      <div class="tag-row"><span class="source-chip">Cosmos and Psyche</span><span class="source-chip">Prometheus the Awakener</span></div>
+      <button class="note-toggle-btn" id="ntb-mod4" onclick="toggleNote('mod4')">+ Add note</button>
+      <div class="module-note-area" id="note-mod4"><textarea class="note-textarea" id="textarea-mod4" placeholder="Your notes…" oninput="saveNote('mod4')"></textarea><div class="note-saved" id="saved-mod4">Saved</div></div>
+    </div>
+  </div>
+
+  <p class="section-label">Part Three · The Central Argument</p>
+
+  <div class="module" id="mod5" data-skeptic="false" data-search="cosmos psyche central argument historical correlations planetary patterns events 1960s wwi wwii">
+    <div class="module-header" onclick="toggle('mod5')">
+      <span class="module-number">05</span>
+      <div class="module-title-block">
+        <div class="module-title"><em>Cosmos and Psyche</em><br>The Case for Archetypal Astrology</div>
+        <div class="module-hook">The main event — with the full correlation table</div>
+      </div>
+      <div class="header-right"><span class="chevron">▼</span><button class="complete-btn" onclick="markComplete(event,'mod5')">✓ Done</button></div>
+    </div>
+    <div class="module-body">
+      <p><em>Cosmos and Psyche</em> (2006, Viking) is Tarnas's magnum opus. Its central claim: major events in Western cultural history correlate consistently with the angular relationships between the outer planets. He documents this across dozens of historical case studies spanning five centuries. His position: he does not claim the planets cause historical events — he claims correlation, that planetary positions serve as a symbolic clock for archetypal currents already running through reality.</p>
+
+      <!-- CORRELATION TABLE -->
+      <div style="margin-top:1.6rem;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.8rem; flex-wrap:wrap; gap:0.5rem;">
+          <div style="font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink-soft);">Planetary correlations · filter by pair</div>
+          <div style="display:flex; gap:0.35rem; flex-wrap:wrap;" id="corr-filters">
+            <button class="corr-fb active" onclick="filterCorr('all',this)">All</button>
+            <button class="corr-fb" onclick="filterCorr('UP',this)" style="color:#5040a0;">Uranus–Pluto</button>
+            <button class="corr-fb" onclick="filterCorr('SP',this)" style="color:#a04020;">Saturn–Pluto</button>
+            <button class="corr-fb" onclick="filterCorr('UN',this)" style="color:#1a5878;">Uranus–Neptune</button>
+            <button class="corr-fb" onclick="filterCorr('SN',this)" style="color:#505888;">Saturn–Neptune</button>
+            <button class="corr-fb" onclick="filterCorr('JU',this)" style="color:#8a6000;">Jupiter–Uranus</button>
+            <button class="corr-fb" onclick="filterCorr('NP',this)" style="color:#2a6858;">Neptune–Pluto</button>
+          </div>
+        </div>
+        <div id="corr-rows"></div>
+      </div>
+
+      <p style="margin-top:1.2rem; font-size:0.85rem; color:var(--ink-faint); font-style:italic;">Note: Tarnas's methodology is interpretive, not statistical. He does not claim these correlations prove causation. The critical questions about selection bias and interpretive flexibility are addressed in Module 07.</p>
+
+      <ul class="topics-list">
+        <li>Uranus-Pluto: revolutionary upheaval, eruption of suppressed forces (1848, 1960s)</li>
+        <li>Saturn-Pluto: structural collapse, confrontation with mortality, power struggles (WWI, 9/11)</li>
+        <li>Jupiter-Uranus: creative and scientific breakthroughs (quantum physics, moon landing, Apple)</li>
+        <li>Uranus-Neptune: idealistic liberation, spiritual-imaginative awakening (Romantic era, 1989)</li>
+        <li>Saturn-Neptune: disillusionment, dream vs. brutal reality (WWI's final years, Tiananmen)</li>
+      </ul>
+      <div class="tag-row"><span class="source-chip">Primary Text</span><span class="source-chip">Viking, 2006</span></div>
+      <button class="note-toggle-btn" id="ntb-mod5" onclick="toggleNote('mod5')">+ Add note</button>
+      <div class="module-note-area" id="note-mod5"><textarea class="note-textarea" id="textarea-mod5" placeholder="Your notes…" oninput="saveNote('mod5')"></textarea><div class="note-saved" id="saved-mod5">Saved</div></div>
+    </div>
+  </div>
+
+  <div class="module" id="mod6" data-skeptic="false" data-search="prometheus awakener uranus problem myth 1781 discovery naming">
+    <div class="module-header" onclick="toggle('mod6')">
+      <span class="module-number">06</span>
+      <div class="module-title-block">
+        <div class="module-title"><em>Prometheus the Awakener</em><br>The Uranus Problem</div>
+        <div class="module-hook">A precise scholarly intervention — one of his most original claims</div>
+      </div>
+      <div class="header-right"><span class="chevron">▼</span><button class="complete-btn" onclick="markComplete(event,'mod6')">✓ Done</button></div>
+    </div>
+    <div class="module-body">
+      <p>This 1995 essay (Spring Publications) addresses a specific problem: the planet discovered in 1781 was named "Uranus," but the mythological Uranus has almost nothing in common with what astrologers actually observe. The actual astrological signature — sudden liberation, Promethean fire, rebellion, technological breakthrough — corresponds precisely to <em>Prometheus</em>, not Uranus.</p>
+      <p>The 1781 discovery coincides precisely with the American and French Revolutions, the Industrial Revolution, and the Romantic movement — all archetypally Promethean. This is one of Tarnas's most careful and testable scholarly claims — worth engaging even for the skeptic.</p>
+      <ul class="topics-list">
+        <li>The mythological Uranus vs. what the planet actually correlates with</li>
+        <li>The Prometheus myth — fire theft, liberation, trickster, punishment</li>
+        <li>The 1781 discovery and its historical context: American Revolution, Industrial Revolution</li>
+        <li>Why the naming error matters philosophically</li>
+      </ul>
+      <div class="tag-row"><span class="source-chip">Primary Text</span><span class="source-chip">Spring Publications, 1995</span></div>
+      <button class="note-toggle-btn" id="ntb-mod6" onclick="toggleNote('mod6')">+ Add note</button>
+      <div class="module-note-area" id="note-mod6"><textarea class="note-textarea" id="textarea-mod6" placeholder="Your notes…" oninput="saveNote('mod6')"></textarea><div class="note-saved" id="saved-mod6">Saved</div></div>
+    </div>
+  </div>
+
+  <p class="section-label">Part Four · Critical Engagement</p>
+
+  <div class="module" id="mod7" data-skeptic="true" data-search="objections critique confirmation bias unfalsifiable synchronicity skeptic pushback">
+    <div class="module-header" onclick="toggle('mod7')">
+      <span class="module-number">07</span>
+      <div class="module-title-block">
+        <div class="module-title">The Best Objections<br><em>How to Push Back Seriously</em></div>
+        <div class="module-hook">Tarnas deserves rigorous critique, not dismissal</div>
+        <div class="module-meta"><span class="skeptic-tag">Skeptic-friendly</span></div>
+      </div>
+      <div class="header-right"><span class="chevron">▼</span><button class="complete-btn" onclick="markComplete(event,'mod7')">✓ Done</button></div>
+    </div>
+    <div class="module-body">
+      <p><strong>1. Confirmation bias.</strong> Tarnas selects which historical events to examine. He does not test his hypothesis by generating predictions and checking them against history. He responds that correlations are consistent across dozens of independent cases over five centuries — but a systematic quantitative study would be more convincing.</p>
+      <p><strong>2. Interpretive flexibility.</strong> Each planetary archetype is defined broadly enough — Pluto as "transformation, power, death and rebirth" — that it could be invoked to explain almost any major historical event. The theory may be unfalsifiable in practice.</p>
+      <p><strong>3. The mechanism problem.</strong> Tarnas disclaims any causal mechanism. He invokes Jung's synchronicity — but synchronicity is itself deeply contested. Invoking it for a sweeping historical theory may be replacing one mystery with another.</p>
+      <p><strong>What he actually claims:</strong> In his most careful formulations, Tarnas claims only that the cosmos appears to be meaningfully patterned, and that this constitutes evidence — not proof — for a participatory view of the universe. He explicitly acknowledges he could be wrong.</p>
+      <ul class="topics-list">
+        <li>Selection bias in historical case studies</li>
+        <li>The unfalsifiability problem — archetypes defined too broadly?</li>
+        <li>Synchronicity as explanatory framework — and its limits</li>
+        <li>What Tarnas actually claims vs. what critics assume</li>
+        <li>What would count as disconfirming evidence?</li>
+      </ul>
+      <button class="note-toggle-btn" id="ntb-mod7" onclick="toggleNote('mod7')">+ Add note</button>
+      <div class="module-note-area" id="note-mod7"><textarea class="note-textarea" id="textarea-mod7" placeholder="Your notes…" oninput="saveNote('mod7')"></textarea><div class="note-saved" id="saved-mod7">Saved</div></div>
+    </div>
+  </div>
+
+  <div class="module" id="mod8" data-skeptic="true" data-search="intellectual ecosystem grof hillman ferrer esalen participatory philosophy CIIS">
+    <div class="module-header" onclick="toggle('mod8')">
+      <span class="module-number">08</span>
+      <div class="module-title-block">
+        <div class="module-title">Tarnas in the Intellectual Ecosystem<br><em>Grof, Hillman, and Participatory Philosophy</em></div>
+        <div class="module-hook">The community that makes the work legible</div>
+        <div class="module-meta"><span class="skeptic-tag">Skeptic-friendly</span></div>
+      </div>
+      <div class="header-right"><span class="chevron">▼</span><button class="complete-btn" onclick="markComplete(event,'mod8')">✓ Done</button></div>
+    </div>
+    <div class="module-body">
+      <p><strong>Stanislav Grof</strong> — Czech-American psychiatrist, Tarnas's closest intellectual collaborator for over 50 years. Grof's clinical maps of non-ordinary states of consciousness are organized around the same planetary archetypes Tarnas uses — independently arrived at through clinical observation, not astrological theory. This convergence is, for Tarnas, significant independent corroboration.</p>
+      <p><strong>James Hillman</strong> — Jungian psychologist who founded archetypal psychology. Argued psychology needed to recover a sense of the soul as embedded in a world of mythological images — the polytheistic imagination that sees the gods as fundamental modes of experience.</p>
+      <p><strong>Jorge Ferrer</strong> — philosopher of religion whose participatory theory of spirituality provides Tarnas's epistemological framework: genuine spiritual knowledge arises through participation, not passive observation of a neutral object.</p>
+      <ul class="topics-list">
+        <li>Stanislav Grof — transpersonal psychology and non-ordinary states</li>
+        <li>James Hillman — archetypal psychology and polytheistic imagination</li>
+        <li>Jorge Ferrer — participatory theory of spirituality</li>
+        <li>The <em>Archai</em> journal (2008–) — the living research community</li>
+      </ul>
+      <div class="tag-row"><span class="source-chip">Context</span><span class="source-chip">CIIS / Esalen legacy</span></div>
+      <button class="note-toggle-btn" id="ntb-mod8" onclick="toggleNote('mod8')">+ Add note</button>
+      <div class="module-note-area" id="note-mod8"><textarea class="note-textarea" id="textarea-mod8" placeholder="Your notes…" oninput="saveNote('mod8')"></textarea><div class="note-saved" id="saved-mod8">Saved</div></div>
+    </div>
+  </div>
+
+  <p class="section-label">Part Five · How to Read Tarnas</p>
+
+  <div class="module" id="mod9" data-skeptic="false" data-search="reading path books order sequence how to read">
+    <div class="module-header" onclick="toggle('mod9')">
+      <span class="module-number">09</span>
+      <div class="module-title-block">
+        <div class="module-title">Recommended Reading Path<br><em>Sequenced for Maximum Comprehension</em></div>
+        <div class="module-hook">What to read, in what order</div>
+      </div>
+      <div class="header-right"><span class="chevron">▼</span><button class="complete-btn" onclick="markComplete(event,'mod9')">✓ Done</button></div>
+    </div>
+    <div class="module-body">
+      <div class="reading-path">
+        <div class="book-entry"><span class="book-num">01</span><div class="book-info"><div class="book-title">The Passion of the Western Mind (1991)</div><div class="book-desc">Full book if possible; at minimum the Epilogue (~25 pages, available online). The essential foundation.</div></div></div>
+        <div class="book-entry"><span class="book-num">02</span><div class="book-info"><div class="book-title">Prometheus the Awakener (1995)</div><div class="book-desc">~100 pages. Best introduction to how Tarnas works with a single planetary archetype before tackling the full system.</div></div></div>
+        <div class="book-entry"><span class="book-num">03</span><div class="book-info"><div class="book-title">Cosmos and Psyche (2006)</div><div class="book-desc">The main work. Don't skip the Introduction and Part One. The 1960s case study (Uranus-Pluto conjunction of 1965–66) is particularly vivid.</div></div></div>
+        <div class="book-entry"><span class="book-num">04</span><div class="book-info"><div class="book-title">C.G. Jung, "Synchronicity: An Acausal Connecting Principle" (1952)</div><div class="book-desc">Tarnas relies heavily on this framework. Reading Jung's original formulation helps you evaluate whether Tarnas uses it carefully or as a conceptual escape hatch.</div></div></div>
+        <div class="book-entry"><span class="book-num">05</span><div class="book-info"><div class="book-title">James Hillman, Re-Visioning Psychology (1975)</div><div class="book-desc">The archetypal psychology background in its most elegant form. A better stylist than Tarnas — clarifies what the tradition is doing.</div></div></div>
+        <div class="book-entry"><span class="book-num">06</span><div class="book-info"><div class="book-title">Archai: The Journal of Archetypal Cosmology (2008–)</div><div class="book-desc">The living research community, edited by Keiron Le Grice. Available online.</div></div></div>
+      </div>
+      <button class="note-toggle-btn" id="ntb-mod9" onclick="toggleNote('mod9')">+ Add note</button>
+      <div class="module-note-area" id="note-mod9"><textarea class="note-textarea" id="textarea-mod9" placeholder="Your notes…" oninput="saveNote('mod9')"></textarea><div class="note-saved" id="saved-mod9">Saved</div></div>
+    </div>
+  </div>
+
+  <div class="module" id="mod10" data-skeptic="true" data-search="questions active engagement critical thinking skeptic framework how to read">
+    <div class="module-header" onclick="toggle('mod10')">
+      <span class="module-number">10</span>
+      <div class="module-title-block">
+        <div class="module-title">Questions to Hold While Reading<br><em>A Framework for Active Engagement</em></div>
+        <div class="module-hook">What the serious reader should be asking throughout</div>
+        <div class="module-meta"><span class="skeptic-tag">Skeptic-friendly</span></div>
+      </div>
+      <div class="header-right"><span class="chevron">▼</span><button class="complete-btn" onclick="markComplete(event,'mod10')">✓ Done</button></div>
+    </div>
+    <div class="module-body">
+      <ul class="topics-list">
+        <li><strong>What exactly is being claimed?</strong> Tarnas makes empirical, explanatory, philosophical, and practical claims. They don't stand or fall together.</li>
+        <li><strong>What would count as disconfirming evidence?</strong> If archetypes explain everything, the theory is unfalsifiable. Worth pressing.</li>
+        <li><strong>Is participatory epistemology genuine or a rhetorical pre-emption?</strong> It's serious philosophy — and it can also function to declare the normal rules of evidence inapplicable.</li>
+        <li><strong>Does the historical analysis depend on the astrological framework?</strong> The case studies often illuminate intellectual history independently. What is the astrological layer actually adding?</li>
+        <li><strong>Are you evaluating the theory or being drawn by the experience?</strong> The experiential invitation to see one's life as cosmically embedded is powerful. Be honest about which is operating.</li>
+        <li><strong>Is there a secular version?</strong> Could the core insight — that history moves in recognizable archetypal cycles — be separated from the astrological mechanism?</li>
+      </ul>
+      <button class="note-toggle-btn" id="ntb-mod10" onclick="toggleNote('mod10')">+ Add note</button>
+      <div class="module-note-area" id="note-mod10"><textarea class="note-textarea" id="textarea-mod10" placeholder="Your notes…" oninput="saveNote('mod10')"></textarea><div class="note-saved" id="saved-mod10">Saved</div></div>
+    </div>
+  </div>
+
+  <p class="section-label">Part Six · The Archetypal Weather Now</p>
+
+  <div class="module" id="mod11" data-skeptic="false" data-search="2024 lecture CIIS world transits jupiter uranus saturn neptune american returns pluto">
+    <div class="module-header" onclick="toggle('mod11')">
+      <span class="module-number">11</span>
+      <div class="module-title-block">
+        <div class="module-title">The World Transits of Our Moment<br><em>From his February 2024 CIIS Lecture</em></div>
+        <div class="module-hook">Jupiter-Uranus, Saturn-Neptune, America's returns — in his own voice</div>
+        <div class="module-meta"><span class="new-tag">From transcript</span></div>
+      </div>
+      <div class="header-right"><span class="chevron">▼</span><button class="complete-btn" onclick="markComplete(event,'mod11')">✓ Done</button></div>
+    </div>
+    <div class="module-body">
+      <p>In February 2024, Tarnas delivered a live public lecture at CIIS. His framing: "We have a particular glass, an archetypal telescope, that gives us remarkable glimpses into the deeper forces and fields that are constellated right now."</p>
+
+      <div style="margin:1.4rem 0; display:flex; flex-direction:column; gap:0.8rem;">
+        <div style="padding:1rem 1.2rem; background:rgba(140,96,0,0.05); border:1px solid rgba(140,96,0,0.15); border-radius:6px;">
+          <div style="font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.08em; color:var(--gold); margin-bottom:0.5rem;">JUPITER–URANUS CONJUNCTION · "Probably the most fun"</div>
+          <p style="margin:0; font-size:0.95rem; color:var(--ink-mid); line-height:1.75;"><em>Cosmos and Psyche</em> devotes 70–80 pages to this cycle. Planck's quantum theory (1900), Heisenberg's uncertainty principle (1927), Beethoven's Eroica, the moon landing, the fall of the Berlin Wall, Jobs &amp; Wozniak in a garage in 1975–76 — "a hidden birth." Harry Potter's first publication in 1997. Shadow: inflation and overexpansion. "Anything inflated too much is going to get deflated — and that's where Saturn comes in."</p>
+        </div>
+        <div style="padding:1rem 1.2rem; background:rgba(26,88,120,0.04); border:1px solid rgba(26,88,120,0.14); border-radius:6px;">
+          <div style="font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.08em; color:var(--accent); margin-bottom:0.5rem;">SATURN–NEPTUNE CONJUNCTION · "A more sobering combination" — building through 2025–26</div>
+          <p style="margin:0; font-size:0.95rem; color:var(--ink-mid); line-height:1.75;">Can produce "democracy fatigue" — discouragement at the gap between ideal and reality. Has historically coincided with war exhaustion: WWI in 1916–19, WWII in 1943–45, Vietnam under the opposition in the early 1970s. At its best: focused consciousness, spiritual practice, healing work. He invoked the Dalai Lama and Martin Luther King as Saturn-Neptune archetypes — sustained effort to bring the dream into costly concrete expression.</p>
+        </div>
+        <div style="padding:1rem 1.2rem; background:rgba(160,64,32,0.04); border:1px solid rgba(160,64,32,0.13); border-radius:6px;">
+          <div style="font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.08em; color:var(--rose); margin-bottom:0.5rem;">THE AMERICAN DIMENSION</div>
+          <p style="margin:0; font-size:0.95rem; color:var(--ink-mid); line-height:1.75;">The US is experiencing two simultaneous returns: its first Pluto return ever (248-year cycle) and its third Uranus return (84 years, exact ~2027–28). First Uranus return: the Civil War. Second: WWII. The Pluto return correlates with the kind of deep decay of existing structures that requires genuine transformation — not renovation. "The US is having to face its shadow as never before. That is painful. It is also, in the archetypal logic, the precondition for anything real to grow on the other side."</p>
+        </div>
+      </div>
+
+      <div class="pull-quote" style="margin:1.4rem 0;">
+        "I wish it need not have happened in my time," said Frodo. Gandalf replied: "So do I. But that is not for them to decide. All we have to decide is what to do with the time that is given us."
+        <cite>— Tolkien, cited by Tarnas to close the 2024 lecture</cite>
+      </div>
+
+      <div class="tag-row"><span class="source-chip">CIIS Public Lecture, Feb 2024</span><span class="source-chip">Transcript — direct source</span></div>
+      <button class="note-toggle-btn" id="ntb-mod11" onclick="toggleNote('mod11')">+ Add note</button>
+      <div class="module-note-area" id="note-mod11"><textarea class="note-textarea" id="textarea-mod11" placeholder="Your notes…" oninput="saveNote('mod11')"></textarea><div class="note-saved" id="saved-mod11">Saved</div></div>
+    </div>
+  </div>
+
+  <div class="module" id="mod12" data-skeptic="false" data-search="forecast 30 years future pluto aquarius neptune aries uranus gemini 2025 2030 2040 2055">
+    <div class="module-header" onclick="toggle('mod12')">
+      <span class="module-number">12</span>
+      <div class="module-title-block">
+        <div class="module-title">The Archetypal Weather Ahead<br><em>2025–2055: The Thirty-Year Forecast</em></div>
+        <div class="module-hook">A timeline of what Tarnas's methodology suggests for the decades ahead</div>
+        <div class="module-meta"><span class="new-tag">Forecast</span></div>
+      </div>
+      <div class="header-right"><span class="chevron">▼</span><button class="complete-btn" onclick="markComplete(event,'mod12')">✓ Done</button></div>
+    </div>
+    <div class="module-body">
+      <p>Tarnas calls prospective analysis an "archetypal weather report" — not prophecy. An extraordinary fact he called unprecedented in the modern era: all three outer planets are changing signs within roughly the same window. Pluto into Aquarius (2024), Neptune into Aries (2025), Uranus into Gemini (2025).</p>
+      <div style="margin-top:1.4rem;">
+        <div class="timeline-entry"><div class="tl-dot" style="background:#7038b0;"></div><div class="tl-dates">2024–2044</div><div class="tl-content"><div class="tl-title">Pluto in Aquarius — twenty years of systemic transformation</div><div class="tl-body">Plutonic depth-force through collective intelligence, technology, democratic ideals, and networks. Both faces possible: genuine democratization, or ruthless concentration of power.</div><div class="tl-mirror">Mirror: 1778–1798 — American &amp; French Revolutions, Constitution, Industrial Revolution begins</div></div></div>
+        <div class="timeline-entry"><div class="tl-dot" style="background:#1a5878;"></div><div class="tl-dates">2025–2038</div><div class="tl-content"><div class="tl-title">Neptune in Aries — idealism meets identity</div><div class="tl-body">Neptunian dissolution in the domain of action, identity, and new beginnings. The fog of who we are and what we are fighting for. Spiritual longing rises — can be captured by demagogy as easily as by genuine awakening.</div><div class="tl-mirror">Mirror: 1861–1874 — US Civil War, Paris Commune</div></div></div>
+        <div class="timeline-entry"><div class="tl-dot" style="background:#5040a0;"></div><div class="tl-dates">2025–2033</div><div class="tl-content"><div class="tl-title">Uranus in Gemini — Promethean fire meets communication</div><div class="tl-body">Disruption of communication, ideas, and information environments. AI revolution, collapse of shared epistemic ground — archetypally Uranus-in-Gemini. Liberation or chaos: genuinely open.</div><div class="tl-mirror">Mirror: 1941–1949 — WWII, atomic bomb, birth of computing</div></div></div>
+        <div class="timeline-entry"><div class="tl-dot" style="background:#2a7040;"></div><div class="tl-dates">2026–2032</div><div class="tl-content"><div class="tl-title">Uranus-Pluto trine (air signs) — revolutionary energies cooperating</div><div class="tl-body">The same archetypal pairing as the explosive 1960s conjunction — but in a cooperative, flowing aspect. A window when disruptive energies may find constructive expression.</div><div class="tl-mirror">Compare: Uranus-Pluto conjunction 1965–66 = the 1960s. A trine is the same energies in a harmonious relationship.</div></div></div>
+        <div class="timeline-entry"><div class="tl-dot" style="background:#5040a0;"></div><div class="tl-dates">2033–2042</div><div class="tl-content"><div class="tl-title">Uranus in Cancer — the Promethean fire meets home</div><div class="tl-body">Disruption moves from collective-intellectual to intimate: home, family, roots, the ancestral. Climate migration, radical reorganization of domestic life.</div><div class="tl-mirror">Mirror: 1948–1956 — postwar family reorganization, Baby Boom, suburban culture</div></div></div>
+        <div class="timeline-entry"><div class="tl-dot" style="background:#7038b0;"></div><div class="tl-dates">2043–2055+</div><div class="tl-content"><div class="tl-title">Pluto in Pisces — the deep dissolution</div><div class="tl-body">Pluto into Pisces: endings, the oceanic, the sacred. After decades of techno-social transformation, a period of profound inward turn — grief-work, spiritual renewal, a searching for the sacred that is central rather than peripheral.</div><div class="tl-mirror">Mirror: 1797–1823 — Romanticism, Napoleonic era, Blake, Keats, Shelley</div></div></div>
+      </div>
+      <div class="tag-row"><span class="source-chip">CIIS Lecture 2024</span><span class="source-chip">Cosmos and Psyche methodology</span></div>
+      <button class="note-toggle-btn" id="ntb-mod12" onclick="toggleNote('mod12')">+ Add note</button>
+      <div class="module-note-area" id="note-mod12"><textarea class="note-textarea" id="textarea-mod12" placeholder="Your notes…" oninput="saveNote('mod12')"></textarea><div class="note-saved" id="saved-mod12">Saved</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="pull-quote">
+    "The cosmos is both physical and spiritual and symbolic all the way through, all the way down — and the fact that its symbolic manifestations are intelligible to us human beings is an ongoing reality I experience as a kind of affirmation."
+    <cite>— Richard Tarnas, CIIS Public Lecture, February 2024</cite>
+  </div>
+
+  <footer>
+    Course compiled from Wikipedia, CIIS faculty records, Tarnas's published works, and his February 2024 CIIS public lecture (transcript) &nbsp;·&nbsp; For personal study
+  </footer>
+
+</div>
+
+<script>
+const TOTAL = 12;
+function updateProgress() {
+  const done = document.querySelectorAll('.module.completed').length;
+  document.getElementById('prog-fill').style.width = (done/TOTAL*100)+'%';
+  document.getElementById('prog-count').textContent = done+' / '+TOTAL;
+}
+function markComplete(e, id) {
+  e.stopPropagation();
+  const mod = document.getElementById(id);
+  mod.classList.toggle('completed');
+  try { localStorage.setItem('tc_'+id, mod.classList.contains('completed')?'1':'0'); } catch(e){}
+  updateProgress();
+}
+function toggle(id) { document.getElementById(id).classList.toggle('open'); }
+function expandAll() { document.querySelectorAll('.module:not([style*="none"])').forEach(m => m.classList.add('open')); }
+
+function doSearch() {
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+  let any = false;
+  document.querySelectorAll('.module').forEach(m => {
+    const s = (m.dataset.search||'')+' '+(m.querySelector('.module-title')?.textContent||'')+' '+(m.querySelector('.module-hook')?.textContent||'');
+    const show = !q || s.toLowerCase().includes(q);
+    m.style.display = show ? '' : 'none';
+    if (show) any = true;
+  });
+  document.getElementById('no-results').style.display = any ? 'none' : 'block';
+  document.querySelectorAll('.section-label').forEach(sl => {
+    let next = sl.nextElementSibling, vis = false;
+    while (next && !next.classList.contains('section-label')) {
+      if (next.classList.contains('module') && next.style.display !== 'none') vis = true;
+      next = next.nextElementSibling;
+    }
+    sl.style.display = vis ? '' : 'none';
+  });
+}
+
+let skepticMode = false;
+function toggleSkepticFilter() {
+  skepticMode = !skepticMode;
+  const btn = document.getElementById('filter-skeptic');
+  btn.classList.toggle('skeptic-active', skepticMode);
+  btn.textContent = skepticMode ? 'For Miriam ✓' : 'For Miriam';
+  applyFilters();
+}
+function clearFilters() {
+  skepticMode = false;
+  document.getElementById('filter-skeptic').classList.remove('skeptic-active');
+  document.getElementById('filter-skeptic').textContent = 'For Miriam';
+  document.getElementById('search-input').value = '';
+  document.querySelectorAll('.module, .section-label').forEach(m => m.style.display = '');
+  document.getElementById('no-results').style.display = 'none';
+}
+function applyFilters() {
+  document.querySelectorAll('.module').forEach(m => { m.style.display = (skepticMode && m.dataset.skeptic !== 'true') ? 'none' : ''; });
+  document.querySelectorAll('.section-label').forEach(sl => {
+    let next = sl.nextElementSibling, vis = false;
+    while (next && !next.classList.contains('section-label')) {
+      if (next.classList.contains('module') && next.style.display !== 'none') vis = true;
+      next = next.nextElementSibling;
+    }
+    sl.style.display = vis ? '' : 'none';
+  });
+}
+
+function toggleNote(id) {
+  const area = document.getElementById('note-'+id);
+  area.classList.toggle('open');
+  const btn = document.getElementById('ntb-'+id);
+  const isOpen = area.classList.contains('open');
+  const hasContent = document.getElementById('textarea-'+id).value.trim();
+  btn.textContent = isOpen ? '− Hide note' : (hasContent ? '✎ Edit note' : '+ Add note');
+}
+function saveNote(id) {
+  const val = document.getElementById('textarea-'+id).value;
+  try { localStorage.setItem('tn_'+id, val); } catch(e){}
+  const saved = document.getElementById('saved-'+id);
+  document.getElementById('ntb-'+id).classList.toggle('has-note', val.trim().length > 0);
+  saved.style.opacity = '1';
+  setTimeout(() => { saved.style.opacity = '0'; }, 1500);
+}
+
+function restoreState() {
+  for (let i=1; i<=TOTAL; i++) {
+    const id = 'mod'+i;
+    try {
+      if (localStorage.getItem('tc_'+id)==='1') document.getElementById(id).classList.add('completed');
+      const note = localStorage.getItem('tn_'+id);
+      if (note) { document.getElementById('textarea-'+id).value = note; document.getElementById('ntb-'+id).classList.add('has-note'); document.getElementById('ntb-'+id).textContent = '✎ Edit note'; }
+    } catch(e){}
+  }
+  updateProgress();
+}
+restoreState();
+
+// Correlation table
+(function(){
+  const DATA = [
+    { pair:'UP', pairName:'Uranus–Pluto', aspect:'Conjunction', color:'#5040a0', dates:'1845–1856', event:'Revolutions of 1848 across Europe. Marx & Engels publish the Communist Manifesto. Darwin begins writing On the Origin of Species.', quality:'Revolutionary upheaval, ideological transformation, eruption of suppressed forces' },
+    { pair:'UP', pairName:'Uranus–Pluto', aspect:'Conjunction', color:'#5040a0', dates:'1965–1966', event:'Cultural revolution of the 1960s. Civil rights movement peaks. Vietnam War protests. Sexual revolution. Beatles. Second Vatican Council. Early computing.', quality:'Explosive liberation, depth-eruption of the collective psyche, dismantling of established order' },
+    { pair:'UP', pairName:'Uranus–Pluto', aspect:'Square', color:'#5040a0', dates:'2012–2015', event:'Arab Spring. Occupy movement. Global financial crisis aftermath. Snowden revelations. Rise of surveillance state debates.', quality:'Tension between liberation and entrenched power — same archetype, square aspect' },
+    { pair:'SP', pairName:'Saturn–Pluto', aspect:'Conjunction', color:'#a04020', dates:'1914–1915', event:'Outbreak of World War One. Assassination of Archduke Franz Ferdinand. Collapse of the old European order. Trench warfare begins.', quality:'Rigidity, destructive power, collapse of established structure, confrontation with mortality' },
+    { pair:'SP', pairName:'Saturn–Pluto', aspect:'Conjunction', color:'#a04020', dates:'1947–1948', event:'Beginning of the Cold War. Berlin blockade. Creation of Israel. Marshall Plan. CIA founded. McCarthy era begins.', quality:'Division, power consolidation, ideological rigidity, geopolitical restructuring' },
+    { pair:'SP', pairName:'Saturn–Pluto', aspect:'Opposition', color:'#a04020', dates:'2001–2002', event:'September 11 attacks. War in Afghanistan. Patriot Act passed. Enron collapse.', quality:'Traumatic collision of forces, security state expansion, destruction of innocent order' },
+    { pair:'UN', pairName:'Uranus–Neptune', aspect:'Conjunction', color:'#1a5878', dates:'1815–1820', event:'Post-Napoleonic Romantic era. Byron, Shelley, Keats. Beethoven\'s late period. Rise of German Romanticism and nationalism.', quality:'Idealistic liberation, spiritual-imaginative awakening, transcendent vision combined with political idealism' },
+    { pair:'UN', pairName:'Uranus–Neptune', aspect:'Conjunction', color:'#1a5878', dates:'1989–1997', event:'Fall of the Berlin Wall. Collapse of the Soviet Union. Nelson Mandela freed. World Wide Web invented. Grunge era. New Age movement peaks.', quality:'Liberation of the collective imagination, dissolution of old ideological structures, networked consciousness' },
+    { pair:'SN', pairName:'Saturn–Neptune', aspect:'Conjunction', color:'#505888', dates:'1916–1918', event:'Final years of World War One. Russian Revolution. Collapse of four empires. Spanish flu. Wilfred Owen\'s war poetry.', quality:'War exhaustion, disillusionment, the gulf between dream and brutal reality' },
+    { pair:'SN', pairName:'Saturn–Neptune', aspect:'Conjunction', color:'#505888', dates:'1952–1953', event:'Korean War armistice. Stalin dies. McCarthy hearings peak. Existentialism dominant. Beckett\'s Waiting for Godot premieres.', quality:'Disillusionment, ideological fatigue, confrontation with the inadequacy of political ideals' },
+    { pair:'JU', pairName:'Jupiter–Uranus', aspect:'Conjunction', color:'#8a6000', dates:'1900–1901', event:'Max Planck formulates quantum theory (December 1900). Freud publishes The Interpretation of Dreams. First Nobel Prizes awarded.', quality:'Sudden liberating breakthroughs across science, art, and psychology simultaneously' },
+    { pair:'JU', pairName:'Jupiter–Uranus', aspect:'Conjunction', color:'#8a6000', dates:'1927–1928', event:'Heisenberg\'s Uncertainty Principle. Bohr\'s Complementarity. First sound films. Lindbergh crosses the Atlantic. First TV broadcast.', quality:'Quantum leaps in scientific paradigm, technological breakthrough, liberation of the possible' },
+    { pair:'JU', pairName:'Jupiter–Uranus', aspect:'Conjunction', color:'#8a6000', dates:'1969', event:'Moon landing (July 1969). Woodstock. Stonewall riots. First ARPANET message. Beatles\' Abbey Road.', quality:'Triumphant human breakthrough, expansion of limits, liberation, historic firsts' },
+    { pair:'JU', pairName:'Jupiter–Uranus', aspect:'Conjunction', color:'#8a6000', dates:'1975–1976', event:'Jobs & Wozniak begin Apple in Palo Alto garage. Microsoft founded. Viking Mars landing. First personal computer (Altair).', quality:'Hidden births of future-transforming technologies — Promethean fire in garages' },
+    { pair:'JU', pairName:'Jupiter–Uranus', aspect:'Conjunction', color:'#8a6000', dates:'1997', event:'First Harry Potter published. Dolly the sheep cloned. Hong Kong handover. Mars Pathfinder lands.', quality:'Cultural breakthroughs, new beginnings, sudden shifts in collective imagination' },
+    { pair:'JU', pairName:'Jupiter–Uranus', aspect:'Conjunction', color:'#8a6000', dates:'2010–2011', event:'Arab Spring begins. Fukushima disaster. iPad launched. Wikileaks at peak. Osama bin Laden killed.', quality:'Explosive liberation, technological disruption, sudden overturning of established orders' },
+    { pair:'NP', pairName:'Neptune–Pluto', aspect:'Conjunction', color:'#2a6858', dates:'1891–1892', event:'The only Neptune-Pluto conjunction in modern recorded history. Nietzsche\'s final writings. Birth of depth psychology. Birth of cinema (Lumière brothers). Tchaikovsky\'s final compositions.', quality:'Once-in-500-years alignment: eruption of the unconscious, birth of the modern psyche, dissolution of Victorian certainties' },
+  ];
+
+  function render(filter) {
+    const rows = document.getElementById('corr-rows');
+    const filtered = filter === 'all' ? DATA : DATA.filter(d => d.pair === filter);
+    let html = `<div class="corr-header"><span>Dates</span><span>Alignment</span><span>Events &amp; Correlations</span></div>`;
+    filtered.forEach(d => {
+      html += `<div class="corr-row">
+        <div class="corr-dates">${d.dates}</div>
+        <div class="corr-pair"><span class="corr-pair-name" style="color:${d.color}">${d.pairName}</span><span class="corr-pair-aspect">${d.aspect}</span></div>
+        <div class="corr-content"><div class="corr-event">${d.event}</div><div class="corr-quality">${d.quality}</div></div>
+      </div>`;
+    });
+    rows.innerHTML = html;
+  }
+
+  window.filterCorr = function(f, btn) {
+    document.querySelectorAll('.corr-fb').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render(f);
+  };
+  render('all');
+})();
+</script>
+</body>
+</html>
