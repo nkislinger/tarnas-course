@@ -3,472 +3,549 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cosmos & Psyche — Audio Course</title>
+<title>Cosmos & Psyche — Audio Course · Richard Tarnas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:        #faf7f2;
-    --bg-card:   #ffffff;
-    --bg-tinted: #f3ede3;
-    --ink:       #1a1510;
-    --ink-mid:   #3d3628;
-    --ink-soft:  #6b6050;
-    --ink-faint: #9a8f80;
-    --gold:      #8a6000;
-    --gold-mid:  #b07c10;
-    --gold-dim:  #6a4800;
-    --deep:      #faf7f2;
-    --deeper:    #f3ede3;
-    --slate:     #8a8070;
-    --rose:      #8a2840;
-    --accent:    #1a5878;
-    --line:      rgba(140,96,0,0.18);
-    --surface:   rgba(140,96,0,0.04);
-    --surface-hover: rgba(140,96,0,0.07);
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #f8f5ef;
+  --panel:    #f0ebe1;
+  --white:    #ffffff;
+  --ink:      #1c1812;
+  --ink-2:    #3a3328;
+  --ink-3:    #6a6050;
+  --ink-4:    #9a9080;
+  --gold:     #7a5200;
+  --gold-2:   #a87020;
+  --gold-hi:  #c89040;
+  --line:     rgba(122,82,0,0.14);
+  --line-2:   rgba(122,82,0,0.08);
+  --green:    #2a6840;
+  --blue:     #1a4e70;
+  --shadow:   rgba(28,24,18,0.06);
+  --shadow-2: rgba(28,24,18,0.12);
+  --player-h: 90px;
+}
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── LAYOUT ───────────────────────────────────────── */
+.shell {
+  display: grid;
+  grid-template-rows: 64px 1fr var(--player-h);
+  grid-template-columns: 300px 1fr;
+  grid-template-areas:
+    "topbar topbar"
+    "sidebar main"
+    "player  player";
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── TOPBAR ───────────────────────────────────────── */
+.topbar {
+  grid-area: topbar;
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  gap: 1rem;
+  box-shadow: 0 1px 0 var(--line);
+}
+
+.topbar-brand {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+  flex-shrink: 0;
+}
+.topbar-brand em { color: var(--gold); font-style: italic; }
+
+.topbar-sep { width: 1px; height: 20px; background: var(--line); flex-shrink: 0; }
+
+.topbar-meta {
+  font-size: 0.7rem;
+  color: var(--ink-4);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.topbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.kbd {
+  font-size: 0.62rem;
+  color: var(--ink-4);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0.15em 0.45em;
+  letter-spacing: 0.04em;
+}
+
+.back-btn {
+  font-size: 0.7rem;
+  color: var(--blue);
+  text-decoration: none;
+  border: 1px solid rgba(26,78,112,0.2);
+  padding: 0.3em 0.75em;
+  border-radius: 4px;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.back-btn:hover { background: rgba(26,78,112,0.05); }
+
+/* ── SIDEBAR ──────────────────────────────────────── */
+.sidebar {
+  grid-area: sidebar;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+
+.part-header {
+  padding: 1rem 1rem 0.4rem;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  position: sticky;
+  top: 0;
+  background: var(--panel);
+  z-index: 2;
+  border-bottom: 1px solid var(--line-2);
+  margin-bottom: 0.2rem;
+}
+
+.track {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background 0.12s, border-color 0.12s;
+  position: relative;
+}
+.track:hover { background: rgba(122,82,0,0.05); }
+.track.active {
+  background: var(--white);
+  border-left-color: var(--gold);
+  box-shadow: 0 1px 0 var(--line-2), 0 -1px 0 var(--line-2);
+}
+
+.track-num {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--ink-4);
+  padding-top: 0.1rem;
+  flex-shrink: 0;
+  width: 1.6rem;
+  font-variant-numeric: tabular-nums;
+}
+.track.active .track-num { color: var(--gold); }
+
+.track-body { flex: 1; min-width: 0; }
+
+.track-title {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ink-2);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.track.active .track-title { color: var(--ink); }
+
+.track-sub {
+  font-size: 0.7rem;
+  color: var(--ink-4);
+  margin-top: 0.1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.track-dur {
+  font-size: 0.62rem;
+  color: var(--ink-4);
+  margin-top: 0.15rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.track-indicator {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+  margin-top: 0.35rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.track.playing .track-indicator {
+  opacity: 1;
+  animation: dot-pulse 1.4s ease-in-out infinite;
+}
+@keyframes dot-pulse {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.6); opacity: 0.4; }
+}
+
+/* ── MAIN CONTENT ─────────────────────────────────── */
+.main {
+  grid-area: main;
+  overflow-y: auto;
+  background: var(--bg);
+}
+.main::-webkit-scrollbar { width: 4px; }
+.main::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+
+.lecture-view {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 3rem 2.5rem 6rem;
+}
+
+.lv-eyebrow {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+
+.lv-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2.4rem;
+  font-weight: 300;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+
+.lv-subtitle {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--ink-3);
+  margin-bottom: 2rem;
+}
+
+.lv-divider {
+  height: 1px;
+  background: var(--line);
+  margin-bottom: 2rem;
+}
+
+.lv-transcript-label {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-bottom: 1.25rem;
+}
+
+.lv-transcript {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.12rem;
+  line-height: 1.85;
+  color: var(--ink-2);
+}
+.lv-transcript p { margin-bottom: 1.2rem; }
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 1rem;
+  color: var(--ink-4);
+  padding: 3rem;
+  text-align: center;
+}
+.empty-state-icon {
+  font-size: 2.5rem;
+  opacity: 0.3;
+}
+.empty-state-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--ink-3);
+}
+.empty-state-hint { font-size: 0.75rem; color: var(--ink-4); }
+
+/* ── PLAYER ───────────────────────────────────────── */
+.player {
+  grid-area: player;
+  background: var(--white);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -4px 24px var(--shadow);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 1.5rem;
+  gap: 1.5rem;
+  height: var(--player-h);
+}
+
+/* Left: track info */
+.player-info { min-width: 0; }
+.player-track-num {
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.1rem;
+}
+.player-track-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.player-track-sub {
+  font-size: 0.68rem;
+  color: var(--ink-4);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Center: controls */
+.player-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ctrl-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-ctrl {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ink-3);
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: color 0.15s, background 0.15s;
+  font-size: 0.7rem;
+}
+.btn-ctrl:hover { color: var(--ink); background: var(--panel); }
+
+.btn-play {
+  width: 48px; height: 48px;
+  background: var(--gold);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  transition: background 0.15s, transform 0.1s;
+  box-shadow: 0 2px 8px rgba(122,82,0,0.3);
+}
+.btn-play:hover { background: var(--gold-2); transform: scale(1.04); }
+.btn-play:active { transform: scale(0.97); }
+
+.btn-speed {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--ink-3);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 0.2em 0.5em;
+  transition: color 0.15s, border-color 0.15s;
+  letter-spacing: 0.04em;
+  min-width: 2rem;
+  text-align: center;
+}
+.btn-speed:hover { color: var(--gold); border-color: var(--gold-hi); }
+
+/* Progress row */
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 340px;
+}
+
+.time {
+  font-size: 0.62rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-4);
+  min-width: 2.8rem;
+}
+.time.right { text-align: right; }
+
+.progress-track {
+  flex: 1;
+  height: 3px;
+  background: var(--line);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.progress-track:hover { height: 5px; margin: -1px 0; }
+.progress-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.1s linear;
+  pointer-events: none;
+}
+
+/* Right: extras */
+.player-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.reading-link {
+  font-size: 0.68rem;
+  color: var(--blue);
+  text-decoration: none;
+  border: 1px solid rgba(26,78,112,0.2);
+  padding: 0.3em 0.7em;
+  border-radius: 4px;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.reading-link:hover { background: rgba(26,78,112,0.05); }
+
+.lecture-counter {
+  font-size: 0.65rem;
+  color: var(--ink-4);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── RESPONSIVE ───────────────────────────────────── */
+@media (max-width: 780px) {
+  .shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: 56px 1fr var(--player-h);
+    grid-template-areas: "topbar" "main" "player";
   }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  body::before { display: none; }
-
-  /* ====== LAYOUT ====== */
-  .app {
-    position: relative; z-index: 1;
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    grid-template-rows: auto 1fr auto;
-    grid-template-areas: "header header" "sidebar main" "player player";
-    min-height: 100vh;
-  }
-
-  /* ====== HEADER ====== */
-  header {
-    grid-area: header;
-    padding: 2rem 2.5rem 1.5rem;
-    border-bottom: 1px solid var(--line);
-    display: flex;
-    align-items: flex-end;
-    gap: 2rem;
-  }
-
-  .header-text { flex: 1; }
-
-  .eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.58rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 0.4rem;
-  }
-
-  header h1 {
-    font-size: 1.9rem;
-    font-weight: 300;
-    line-height: 1.15;
-  }
-
-  header h1 em { font-style: italic; color: var(--gold); }
-
-  .header-meta {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
-    color: var(--slate);
-  }
-
-  /* ====== SIDEBAR ====== */
-  .sidebar {
-    grid-area: sidebar;
-    border-right: 1px solid var(--line);
-    overflow-y: auto;
-    padding-bottom: 2rem;
-    background: var(--bg-tinted);
-  }
-
-  .part-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.55rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-    padding: 1.4rem 1.4rem 0.5rem;
-    position: sticky;
-    top: 0;
-    background: #faf7f2;
-    z-index: 2;
-  }
-
-  .track-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.8rem;
-    padding: 0.9rem 1.4rem;
-    cursor: pointer;
-    border-left: 2px solid transparent;
-    transition: background 0.15s, border-color 0.15s;
-    position: relative;
-  }
-
-  .track-item:hover { background: var(--surface-hover); }
-
-  .track-item.active {
-    background: var(--surface);
-    border-left-color: var(--gold);
-  }
-
-  .track-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--slate);
-    padding-top: 0.2rem;
-    flex-shrink: 0;
-    width: 1.5rem;
-  }
-
-  .track-item.active .track-num { color: var(--gold); }
-
-  .track-info { flex: 1; min-width: 0; }
-
-  .track-title {
-    font-size: 0.9rem;
-    font-weight: 400;
-    line-height: 1.35;
-    color: rgba(240,232,216,0.90);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .track-item.active .track-title { color: #1a1510; }
-
-  .track-subtitle {
-    font-size: 0.75rem;
-    color: var(--slate);
-    margin-top: 0.15rem;
-    font-style: italic;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .track-dur {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    color: rgba(74,68,96,0.7);
-    margin-top: 0.2rem;
-  }
-
-  .play-indicator {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--gold);
-    flex-shrink: 0;
-    margin-top: 0.45rem;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .track-item.playing .play-indicator { opacity: 1; animation: pulse 1.4s ease-in-out infinite; }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.7); }
-  }
-
-  /* ====== MAIN CONTENT ====== */
-  main {
-    grid-area: main;
-    overflow-y: auto;
-    padding: 2.5rem 3rem;
-  }
-
-  .module-display { max-width: 640px; }
-
-  .module-part {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.58rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-    margin-bottom: 0.8rem;
-  }
-
-  .module-title-main {
-    font-size: 2rem;
-    font-weight: 300;
-    line-height: 1.2;
-    margin-bottom: 0.4rem;
-  }
-  .module-title-main em { color: var(--gold); font-style: italic; }
-
-  .module-hook-main {
-    font-size: 1rem;
-    color: rgba(240,232,216,0.68);
-    font-style: italic;
-    margin-bottom: 2rem;
-  }
-
-  .transcript-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--slate);
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-  }
-  .transcript-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
-
-  .transcript-text {
-    font-size: 1.05rem;
-    line-height: 1.9;
-    color: rgba(240,232,216,0.95);
-    font-weight: 300;
-  }
-
-  .transcript-text p { margin-bottom: 1.2rem; }
-
-  /* word highlight */
-  .word { display: inline; }
-  .word.highlight { color: var(--gold); }
-
-  /* ====== PERSISTENT PLAYER ====== */
-  .player {
-    grid-area: player;
-    border-top: 1px solid var(--line);
-    background: rgba(250,247,242,0.97);
-    backdrop-filter: blur(20px);
-    padding: 1rem 2.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-  }
-
-  .player-top {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-
-  .now-playing {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .np-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.55rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--slate);
-    margin-bottom: 0.15rem;
-  }
-
-  .np-title {
-    font-size: 0.95rem;
-    font-weight: 300;
-    color: #1a1510;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .controls {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
-
-  .ctrl-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: rgba(240,232,216,0.78);
-    padding: 0.4rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.15s, background 0.15s;
-    font-size: 1rem;
-  }
-  .ctrl-btn:hover { color: #1a1510; background: var(--surface-hover); }
-  .ctrl-btn:disabled { color: var(--slate); cursor: default; }
-
-  .ctrl-btn.play-main {
-    width: 44px; height: 44px;
-    background: var(--gold);
-    color: var(--bg);
-    font-size: 1.1rem;
-    border-radius: 50%;
-  }
-  .ctrl-btn.play-main:hover { background: var(--gold-mid); color: var(--bg); }
-
-  .speed-btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.05em;
-    color: rgba(240,232,216,0.68);
-    border: 1px solid var(--line);
-    background: none;
-    cursor: pointer;
-    padding: 0.25em 0.6em;
-    border-radius: 3px;
-    transition: color 0.15s, border-color 0.15s;
-  }
-  .speed-btn:hover { color: var(--gold); border-color: var(--gold-dim); }
-
-  .progress-row {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-  }
-
-  .time-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--slate);
-    white-space: nowrap;
-    min-width: 3rem;
-  }
-  .time-label.right { text-align: right; }
-
-  .progress-bar {
-    flex: 1;
-    height: 3px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 2px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: var(--gold);
-    border-radius: 2px;
-    width: 0%;
-    transition: width 0.1s linear;
-    pointer-events: none;
-  }
-
-  /* Browser check notice */
-  .notice {
-    background: rgba(200,169,110,0.08);
-    border-left: 3px solid var(--gold-dim);
-    padding: 1rem 1.5rem;
-    font-size: 0.88rem;
-    color: rgba(240,232,216,0.82);
-    font-style: italic;
-    margin-bottom: 1.5rem;
-    border-radius: 2px;
-  }
-
-  .voice-select-row {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .voice-select-row label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--slate);
-  }
-
-  select {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    color: #1a1510;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    padding: 0.3em 0.8em;
-    border-radius: 3px;
-    cursor: pointer;
-    outline: none;
-  }
-  select:focus { border-color: var(--gold-dim); }
-  select option { background: #0f0d08; }
-
-  @media (max-width: 700px) {
-    .app { grid-template-columns: 1fr; grid-template-areas: "header" "main" "sidebar" "player"; }
-    .sidebar { border-right: none; border-top: 1px solid var(--line); max-height: 280px; overflow-y: auto; }
-    main { padding: 1.5rem; }
-    header { padding: 1.5rem; }
-  }
+  .sidebar { display: none; }
+  .progress-row { width: 200px; }
+  .player { grid-template-columns: 1fr auto; }
+  .player-right { display: none; }
+  .lv-title { font-size: 1.8rem; }
+  .lecture-view { padding: 2rem 1.25rem 6rem; }
+}
 </style>
 </head>
 <body>
-<div class="app">
+<div class="shell">
 
-  <header>
-    <div class="header-text">
-      <p class="eyebrow">Audio Course · Richard Tarnas</p>
-      <h1><em>Cosmos</em> and Psyche<br>Archetypal Astrology</h1>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-brand"><em>Cosmos</em> and Psyche</div>
+    <div class="topbar-sep"></div>
+    <div class="topbar-meta">Audio Course · Richard Tarnas · 12 Lectures</div>
+    <div class="topbar-right">
+      <span class="kbd">Space</span><span style="font-size:0.62rem;color:var(--ink-4)">play</span>
+      <span class="kbd">← →</span><span style="font-size:0.62rem;color:var(--ink-4)">prev/next</span>
+      <a href="tarnas_astrology_course.html" class="back-btn">📖 Reading Course</a>
     </div>
-    <div class="header-meta">12 lectures &nbsp;·&nbsp; Space = play/pause &nbsp;·&nbsp; ← → = prev/next</div>
   </header>
 
   <!-- SIDEBAR -->
-  <nav class="sidebar" id="sidebar">
-    <!-- populated by JS -->
-  </nav>
+  <nav class="sidebar" id="sidebar"></nav>
 
   <!-- MAIN -->
-  <main id="main-content">
-    <div class="module-display" id="module-display">
-      <!-- populated by JS -->
+  <main class="main" id="main">
+    <div class="lecture-view">
+      <div class="empty-state" id="empty-state">
+        <div class="empty-state-icon">♄</div>
+        <div class="empty-state-text">Select a lecture to begin</div>
+        <div class="empty-state-hint">Choose from the list on the left · Space to play/pause</div>
+      </div>
+      <div id="lecture-content" style="display:none"></div>
     </div>
   </main>
 
   <!-- PLAYER -->
-  <div class="player">
-    <div class="player-top">
-      <div class="now-playing">
-        <div class="np-label">Now playing</div>
-        <div class="np-title" id="np-title">Select a lecture to begin</div>
+  <footer class="player">
+    <div class="player-info">
+      <div class="player-track-num" id="p-num">—</div>
+      <div class="player-track-title" id="p-title">No lecture selected</div>
+      <div class="player-track-sub" id="p-sub"></div>
+    </div>
+
+    <div class="player-controls">
+      <div class="ctrl-row">
+        <button class="btn-ctrl" onclick="prevTrack()" title="Previous (←)">&#9664;&#9664;</button>
+        <button class="btn-play" id="btn-play" onclick="togglePlay()" title="Play / Pause (Space)">&#9654;</button>
+        <button class="btn-ctrl" onclick="nextTrack()" title="Next (→)">&#9654;&#9654;</button>
+        <button class="btn-speed" id="btn-speed" onclick="cycleSpeed()">1×</button>
       </div>
-      <div class="controls">
-        <button class="ctrl-btn" id="btn-prev" title="Previous" onclick="prevTrack()">&#9664;&#9664;</button>
-        <button class="ctrl-btn play-main" id="btn-play" title="Play / Pause" onclick="togglePlay()">&#9654;</button>
-        <button class="ctrl-btn" id="btn-next" title="Next" onclick="nextTrack()">&#9654;&#9654;</button>
-        <button class="speed-btn" id="btn-speed" onclick="cycleSpeed()">1×</button>
+      <div class="progress-row">
+        <span class="time" id="t-cur">0:00</span>
+        <div class="progress-track" id="prog-track" onclick="seekTo(event)">
+          <div class="progress-fill" id="prog-fill"></div>
+        </div>
+        <span class="time right" id="t-dur">—</span>
       </div>
     </div>
-    <div class="progress-row">
-      <span class="time-label" id="time-current">0:00</span>
-      <div class="progress-bar" id="progress-bar" onclick="seekTo(event)">
-        <div class="progress-fill" id="progress-fill"></div>
-      </div>
-      <span class="time-label right" id="time-total">—</span>
+
+    <div class="player-right">
+      <span class="lecture-counter" id="lec-counter">0 / 12</span>
+      <a href="tarnas_astrology_course.html" class="reading-link">Reading version →</a>
     </div>
-  </div>
+  </footer>
 
 </div>
 
 <script>
 const TRACKS = [
-  {
-    part: "Part One · Foundations",
-    num: "01",
-    title: "Who Is Richard Tarnas?",
-    subtitle: "The scholar behind the astrologer",
-    text: `Welcome to Cosmos and Psyche: An Audio Course in the Astrological Work of Richard Tarnas.
+  { part:"Part One · Foundations", num:"01", title:"Who Is Richard Tarnas?", sub:"The scholar behind the astrologer", text:`Welcome to Cosmos and Psyche: An Audio Course in the Astrological Work of Richard Tarnas.
 
 Lecture One: Who Is Richard Tarnas?
 
@@ -478,614 +555,297 @@ Richard Theodore Tarnas was born in 1950 in Geneva, Switzerland. He entered Harv
 
 In 1974, he traveled to Esalen Institute in Big Sur, California, to study with the Czech-American psychiatrist Stanislav Grof — one of the twentieth century's leading researchers into non-ordinary states of consciousness. Tarnas would remain at Esalen for a decade, eventually serving as its director of programs. During those years, his intellectual companions included Joseph Campbell, Gregory Bateson, Elizabeth Kübler-Ross, and James Hillman — a constellation of thinkers working at the intersection of depth psychology, mythology, and a critique of scientific rationalism.
 
-Tarnas left Esalen in 1984 and spent the next six years writing what would become his first book: The Passion of the Western Mind. Published in 1991, it became a bestseller and remained in use at universities for decades. It contains no astrology whatsoever. It is simply a masterful narrative history of Western thought — from ancient Greece through postmodernism — praised by Joseph Campbell, cited by astronaut Susan Helms as one of the books that inspired her career, and widely regarded as one of the finest intellectual histories of its kind.
+Tarnas left Esalen in 1984 and spent the next six years writing what would become his first book: The Passion of the Western Mind. Published in 1991, it became a bestseller and remained in use at universities for decades. It contains no astrology whatsoever. It is simply a masterful narrative history of Western thought — praised by Joseph Campbell and widely regarded as one of the finest intellectual histories of its kind.
 
 Only after that — only after establishing this scholarly foundation — did Tarnas publish his explicitly astrological work: Prometheus the Awakener in 1995, and Cosmos and Psyche in 2006, the result of thirty years of research.
 
-This sequence matters. Tarnas is not a believer-first astrologer reaching for intellectual respectability. He is a historian and philosopher who subjected an anomalous hypothesis to three decades of scrutiny before presenting it publicly. Whether his conclusions hold is a separate question. But the character of his inquiry is serious, and it deserves serious engagement.
+This sequence matters. Tarnas is not a believer-first astrologer reaching for intellectual respectability. He is a historian and philosopher who subjected an anomalous hypothesis to three decades of scrutiny before presenting it publicly.` },
 
-He is currently professor of philosophy and psychology at the California Institute of Integral Studies in San Francisco, and founding director of its graduate program in Philosophy, Cosmology, and Consciousness — a program that draws together transpersonal psychology, cosmology, and the philosophy of science.`
-  },
-  {
-    part: "Part One · Foundations",
-    num: "02",
-    title: "The Passion of the Western Mind",
-    subtitle: "The necessary prologue",
-    text: `Lecture Two: The Passion of the Western Mind — The Necessary Prologue.
+  { part:"Part One · Foundations", num:"02", title:"The Passion of the Western Mind", sub:"The necessary prologue", text:`Lecture Two: The Passion of the Western Mind — The Necessary Prologue.
 
-The Passion of the Western Mind, published in 1991, is where any serious engagement with Tarnas must begin. He has said so himself — and the architecture of his larger project makes clear why.
+The Passion of the Western Mind, published in 1991, is where any serious engagement with Tarnas must begin.
 
-The book is a narrative history of Western thought, moving from Homeric cosmology through ancient Greece, the rise of Christianity, the medieval synthesis, the Scientific Revolution, the Enlightenment, Romanticism, Nietzsche, Freud, and into the fragmented twentieth century. It traces, with unusual clarity and sympathy, how Western human beings came to understand themselves and their place in the universe.
+The book is a narrative history of Western thought, moving from Homeric cosmology through ancient Greece, the rise of Christianity, the medieval synthesis, the Scientific Revolution, the Enlightenment, Romanticism, Nietzsche, Freud, and into the fragmented twentieth century.
 
-What Tarnas shows — and this is the book's central argument — is that the modern world arrived at its current condition through a specific intellectual arc. The ancient world understood itself as embedded in a living, meaningful cosmos. The Scientific Revolution, whatever its extraordinary achievements, produced what the philosopher Max Weber called the "disenchantment" of the world: the universe became a mechanism, not a home; matter became inert, not sacred; and the human being became an isolated consciousness looking out at a dead universe that has no intrinsic meaning to offer.
+What Tarnas shows — and this is the book's central argument — is that the modern world arrived at its current condition through a specific intellectual arc. The ancient world understood itself as embedded in a living, meaningful cosmos. The Scientific Revolution produced what the philosopher Max Weber called the "disenchantment" of the world: the universe became a mechanism, not a home; matter became inert, not sacred.
 
-Tarnas does not romanticize the pre-modern world or dismiss science. His critique is more precise: the problem is not scientific method but a particular metaphysical assumption — the sharp Cartesian division between the knowing subject and the known world — that was elevated from a useful methodological stance into a metaphysical absolute.
+The Epilogue, titled "The Transformation of the Western Mind," is where Tarnas first gestures toward his proposed resolution — a participatory epistemology in which the human mind is understood not as a passive receptor of external data, but as an active co-participant with a world that itself has depths of meaning.
 
-The Epilogue to the book, titled "The Transformation of the Western Mind," is where Tarnas first gestures toward his proposed resolution. He argues that the Western mind's trajectory — from embedded participation in a sacred cosmos, to radical alienation — is not the end of the story. It is a developmental passage, analogous at the cultural level to the transition from childhood participation mystique to adolescent autonomy to an adult capacity for genuine differentiated relationship.
+For the skeptic: this book stands completely on its own, independent of any astrological claims. It is simply excellent intellectual history. Read it first.` },
 
-The future he gestures toward is a "participatory" epistemology: one in which the human mind is understood not as a passive receptor of external data, but as an active co-participant with a world that itself has depths of meaning. Not a return to naïve enchantment — but a recovery of the sense that the cosmos is, in some meaningful sense, alive to us.
-
-This is the philosophical problem that archetypal astrology, for Tarnas, represents one possible approach to solving. The planets become, in his later work, potential evidence that the cosmos is indeed patterned in ways that resonate with the human psyche — that we are not, after all, accidental observers of a meaningless mechanism.
-
-For the skeptic: this book stands completely on its own, independent of any astrological claims. It is simply excellent intellectual history. Read it first.`
-  },
-  {
-    part: "Part Two · The Archetypal Framework",
-    num: "03",
-    title: "What Is an Archetype?",
-    subtitle: "From Plato to Jung to the planets",
-    text: `Lecture Three: What Is an Archetype?
+  { part:"Part Two · The Archetypal Framework", num:"03", title:"What Is an Archetype?", sub:"From Plato to Jung to the planets", text:`Lecture Three: What Is an Archetype?
 
 Before anything else in Tarnas's astrological work can be properly evaluated, one concept must be understood: the archetype. Not as a psychological buzzword or a Jungian cliché, but as a specific philosophical tradition with a two-and-a-half-thousand-year history.
 
-The concept begins with Plato. For Plato, archetypes — or Forms — are the universal patterns from which all particular things in the world are derived. The Form of Beauty is not beautiful in the way a rose is beautiful; it is the universal structure of beauty itself, which particular beautiful things imperfectly instantiate. This is not merely poetic. It is a serious metaphysical claim: the world's particular appearances are grounded in universal, immaterial, eternally existing patterns.
+The concept begins with Plato. For Plato, archetypes are the universal patterns from which all particular things in the world are derived. The Form of Beauty is not beautiful in the way a rose is beautiful; it is the universal structure of beauty itself, which particular beautiful things imperfectly instantiate.
 
-Aristotle retained the concept of universal form but relocated it: for Aristotle, the form is not transcendent but immanent — it exists within things, as their organizing principle, their essential nature. The archetype becomes less a heavenly template and more an active pattern shaping things from within.
+Carl Jung gave the concept its modern psychological form. For Jung, archetypes are universal patterns embedded in the collective unconscious — a layer of the psyche shared across all humanity. The archetypes manifest as recurring figures in dreams, myths, and art across cultures: the Hero, the Shadow, the Self, the Trickster.
 
-This tension between transcendent and immanent archetypes runs through the entire history of Western thought, emerging again in the medieval dispute between Realists and Nominalists, and recurring in the Romantic philosophy of Schelling and Goethe.
+Tarnas synthesizes all of this. His claim is more radical and more philosophically interesting: the planetary archetypes are universal patterns that manifest simultaneously in the outer world and the inner world — not because one causes the other, but because mind and cosmos are not ultimately separate. The same pattern that shows up as a historical event also shows up in individual psychology, and in the position of a planetary body — not as cause and effect but as a kind of simultaneous resonance.` },
 
-Carl Jung gave the concept its modern psychological form. For Jung, archetypes are universal patterns embedded in what he called the collective unconscious — a layer of the psyche shared across all humanity, not derived from individual experience. The archetypes manifest as recurring figures in dreams, myths, and art across cultures: the Hero, the Great Mother, the Shadow, the Self, the Trickster. They are not invented by individuals; they erupt into individual consciousness from a deeper common substrate.
+  { part:"Part Two · The Archetypal Framework", num:"04", title:"The Planetary Archetypes", sub:"A symbolic dictionary", text:`Lecture Four: The Planetary Archetypes — A Symbolic Dictionary.
 
-James Hillman, building on Jung, pushed this further in what he called archetypal psychology. For Hillman, the archetypes are not just psychological categories but the organizing principles of experience — the gods, in polytheistic imagination, are not supernatural beings but names for the fundamental modes in which reality shows up for us.
+Tarnas works primarily with the outer planets — those beyond Saturn — because their slow movement means their angular relationships to each other last for years or decades, creating world transits he correlates with large-scale cultural and historical periods.
 
-Tarnas synthesizes all of this. His claim is not that the planets cause archetypes to manifest, nor that the archetypes exist solely inside the human mind. His claim is more radical and more philosophically interesting: the planetary archetypes are universal patterns that manifest simultaneously in the outer world and the inner world — not because one causes the other, but because mind and cosmos are not ultimately separate. The same pattern that shows up as a historical event also shows up in individual psychology, also shows up in the position of a planetary body — not as cause and effect but as a kind of simultaneous resonance.
+Saturn. The archetype of structure, limitation, time, and maturation. Saturn represents the principle of necessity — the hard facts, the weight of karma, the reality principle.
 
-This is, frankly, difficult to evaluate scientifically. But it is not philosophically incoherent. It is precisely the participatory epistemology Tarnas outlined in The Passion of the Western Mind, now made concrete.`
-  },
-  {
-    part: "Part Two · The Archetypal Framework",
-    num: "04",
-    title: "The Planetary Archetypes",
-    subtitle: "A symbolic dictionary",
-    text: `Lecture Four: The Planetary Archetypes — A Symbolic Dictionary.
+Uranus — or as Tarnas prefers, Prometheus. The planet carries the archetypal signature of Prometheus — the Titan who stole fire from the gods. The archetype is one of liberation, sudden awakening, rebellion, technological innovation, the breaking of old forms, and Promethean fire — the spark that disrupts the status quo.
 
-Tarnas works primarily with the outer planets — those beyond Saturn — because their slow movement through the zodiac means that their angular relationships to each other last for years or even decades, creating what astrologers call "world transits" that he correlates with large-scale cultural and historical periods.
+Neptune. The archetype of dissolution, mysticism, idealism, the oceanic, spiritual longing — and also illusion, propaganda, and collective delusion. Neptune dissolves boundaries between self and other, between the real and the imagined.
 
-Let us walk through the core archetypes as Tarnas defines them.
+Pluto. The most intense and concentrated of the outer planetary archetypes. Pluto is the principle of depth, transformation, power, compulsion, death and rebirth. Named for the lord of the underworld, the Plutonic archetype manifests as volcanic eruptions of what had been buried.
 
-Saturn. The archetype of structure, limitation, time, and maturation. Saturn represents the principle of necessity — the hard facts that constrain us, the weight of karma, the reality principle. In mythology, Saturn is Kronos: father of time, devourer of his children, lord of limitation. In historical periods under strong Saturn influence, Tarnas finds patterns of consolidation, constraint, conservative reaction, and difficult reckoning with reality.
+The crucial point: Tarnas does not use these archetypes as rigid categories. He insists they are more like musical themes that can be played in many keys — the same archetype can manifest as liberation or as chaos, as spiritual vision or as delusion, depending on the broader context.` },
 
-Uranus — or as Tarnas prefers, Prometheus. This is one of Tarnas's most distinctive and carefully argued claims, which we will examine at length in Lecture Six. The planet traditionally called Uranus carries, in his analysis, the archetypal signature not of the mythological sky god Uranus but of Prometheus — the Titan who stole fire from the gods. The archetype is one of liberation, sudden awakening, rebellion, technological innovation, the breaking of old forms, and what Tarnas calls "Promethean fire" — the spark that disrupts the status quo. When Uranus-Prometheus is strongly active in world transits, Tarnas finds revolutionary cultural eruptions: the 1960s, the Romantic era, the age of Enlightenment.
+  { part:"Part Three · The Central Argument", num:"05", title:"Cosmos and Psyche", sub:"The case for archetypal astrology", text:`Lecture Five: Cosmos and Psyche — The Central Argument.
 
-Neptune. The archetype of dissolution, mysticism, idealism, the oceanic, spiritual longing, and illusion. Neptune dissolves boundaries — between self and other, between the real and the imagined, between the sacred and the mundane. In its highest expression: spiritual vision, artistic transcendence, universal compassion. In its shadow: confusion, delusion, escapism, the dissolution of structure without replacement. Historically, Neptune transits correlate in Tarnas's reading with periods of spiritual revival, utopian movements, and also mass disillusionment.
+Published in 2006 by Viking Press, Cosmos and Psyche is the result of thirty years of research. Its central claim: major events and cultural shifts in Western history correlate — consistently, meaningfully, and across multiple independent cases — with the angular relationships between the outer planets.
 
-Pluto. The most intense and concentrated of the outer planetary archetypes. Pluto is the principle of depth, transformation, power, compulsion, death and rebirth. Named for the lord of the underworld, the Plutonic archetype manifests as volcanic eruptions of what had been buried — in individuals, as shadow material demanding integration; in history, as revolutionary upheaval, the eruption of primal forces. Tarnas correlates Pluto transits with the French Revolution, the two World Wars, and — in conjunction with Uranus in the early 1960s — the cultural revolution of that decade.
+This is not a claim about individual natal charts. Tarnas is making a claim about world history — about why the 1960s were the 1960s, why the French Revolution happened when it did, why the Romantic era had its distinctive character.
 
-Jupiter expands, magnifies, and enriches — periods of cultural confidence and philosophical sweep. Mars embodies drive, assertion, and conflict. And Venus, less central to Tarnas's historical work, carries the archetypes of beauty, erotic connection, and aesthetic value.
+The book documents these claims through detailed historical case studies: the Uranus-Pluto conjunction of the mid-1960s correlating with the cultural revolution; Saturn-Pluto conjunctions correlating with historical crises including World War One and September 11th; the Uranus-Neptune conjunction during the Romantic era.
 
-The crucial point: Tarnas does not use these archetypes as rigid categories. He insists they are more like musical themes that can be played in many keys — the same planetary archetype can manifest as liberation or as chaos, as spiritual vision or as delusion, depending on the broader context. This interpretive flexibility is, as we will see in our critical lecture, both the theory's strength and its most vulnerable point.`
-  },
-  {
-    part: "Part Three · The Central Argument",
-    num: "05",
-    title: "Cosmos and Psyche",
-    subtitle: "The case for archetypal astrology",
-    text: `Lecture Five: Cosmos and Psyche — The Central Argument.
+His methodology is explicitly historical and interpretive, not statistical. He argues that the sheer weight of convergent evidence constitutes a meaningful pattern that cannot be explained by coincidence alone.
 
-Published in 2006 by Viking Press, Cosmos and Psyche: Intimations of a New World View is Richard Tarnas's primary scholarly statement. It is the result of thirty years of research. It is also, by his own acknowledgment, a deeply contested work.
+He does not claim that the planets cause historical events. He claims something more modest: that planetary positions serve as a kind of symbolic clock — not a causal mechanism but a correlative signature of archetypal currents that are already running through reality.` },
 
-The central claim is this: major events and cultural shifts in Western history correlate — consistently, meaningfully, and across multiple independent cases — with the angular relationships between the outer planets as observed from Earth. Specifically, when planets like Uranus, Neptune, and Pluto form significant angular alignments — conjunctions, oppositions, squares — the cultural and historical character of those periods reflects the archetypal qualities associated with those planets.
+  { part:"Part Three · The Central Argument", num:"06", title:"Prometheus the Awakener", sub:"The Uranus problem", text:`Lecture Six: Prometheus the Awakener — The Uranus Problem.
 
-This is not a claim about individual natal charts. It is not about your sun sign or your rising sign. Tarnas is making a claim about world history — about why the 1960s were the 1960s, why the French Revolution happened when it did, why the Romantic era had its distinctive character.
+Prometheus the Awakener, published in 1995, addresses a specific scholarly problem: the planet discovered in 1781 was named "Uranus" — but the mythological Uranus has almost nothing in common with what astrologers actually observe the planet correlating with.
 
-The book documents these claims through a series of detailed historical case studies. The Uranus-Pluto conjunction of the mid-1960s: a period of revolutionary cultural upheaval, liberation movements, explosive creative energy, and the dismantling of established social structures — precisely the combination of Promethean liberation and Plutonic depth-eruption the archetype would predict. The Saturn-Pluto conjunction of 1914: the outbreak of World War One, a period of tremendous destructive force, rigid structural collapse, and the death of the old European order. The alignment of Uranus and Neptune in the late eighteenth and early nineteenth centuries: the Romantic era, a period of spiritual idealism, artistic transcendence, and the revolt against Enlightenment rationalism.
+The sky god Uranus is associated with the status quo, with primordial authority. The planet's actual astrological signature is precisely the opposite: sudden liberation, revolutionary change, the spark of Promethean fire, the awakener who disrupts sleeping consciousness, the trickster who breaks old forms. This is not Uranus. This is Prometheus.
 
-Tarnas also applies the framework to individual biographies — following the planetary transits in the lives of Nietzsche, Freud, Darwin, Beethoven, and others, finding that major creative breakthroughs or personal crises correlate with specific planetary configurations.
+The Prometheus myth: the Titan who stole fire from the gods and gave it to humanity, enabling civilization and consciousness. Who was punished by Zeus for this act of transgressive liberation. Who is associated in Aeschylus's drama with prophetic foresight and rebellion against divine authority.
 
-His methodology is explicitly historical and interpretive, not statistical. He does not claim to have run a randomized controlled trial on the correlation between planetary positions and historical events. He argues instead that the sheer weight of convergent evidence — the consistent recurrence of the same archetypal qualities across dozens of independent cases spanning five centuries — constitutes a meaningful pattern that cannot be explained by coincidence alone.
+The planet Uranus was discovered in 1781 — at the precise historical moment of the American and French Revolutions, the beginning of the Industrial Revolution, the Romantic movement's revolt against Enlightenment rationalism. All Promethean themes.
 
-His epistemological position is carefully qualified. He does not claim that the planets cause historical events. He claims something more modest and more philosophically interesting: that the cosmos is meaningfully patterned, that human history participates in that patterning, and that planetary positions serve as a kind of symbolic clock — not a causal mechanism but a correlative signature of archetypal currents that are already running through reality.
+Tarnas argues this is not coincidence. It is the same archetypal pattern manifesting simultaneously in political history, cultural life, and the symbolic moment of the planet's discovery.` },
 
-Whether this constitutes a genuine intellectual advance or an elaborate post-hoc rationalization is precisely what serious engagement with this work requires you to decide.`
-  },
-  {
-    part: "Part Three · The Central Argument",
-    num: "06",
-    title: "Prometheus the Awakener",
-    subtitle: "The Uranus problem",
-    text: `Lecture Six: Prometheus the Awakener — The Uranus Problem.
+  { part:"Part Four · Critical Engagement", num:"07", title:"The Best Objections", sub:"How to push back seriously", text:`Lecture Seven: The Best Objections — How to Push Back Seriously.
 
-Prometheus the Awakener, published in 1995 by Spring Publications, is a lean, focused essay of about a hundred pages. It addresses a specific scholarly problem that sits at the heart of Tarnas's broader project.
+When the Wall Street Journal reviewed Cosmos and Psyche, the reviewer implied senility rather than engaging the argument. That is not a critique; it is a dismissal. Tarnas deserves better opposition than that, because the genuine objections are philosophically interesting.
 
-The problem is this. In 1781, the astronomer William Herschel discovered a new planet beyond Saturn, the first planet discovered in the modern era. It was eventually named Uranus after the Greek sky god — the primordial heaven, father of the Titans, castrated by his son Cronus and deposed from power. This naming was essentially arbitrary: Uranus was chosen partly because other planets bore Roman names of classical gods, and partly because Uranus was the father of Saturn, the next planet inward.
+The first and most significant is the confirmation bias problem. Tarnas selects which historical events to examine. Is he choosing events that fit his correlations and ignoring those that don't? He does not test his hypothesis by generating predictions and checking them against history. A systematic quantitative study would be more convincing.
 
-But as astrologers began working with the new planet over the following two centuries, they found that its actual astrological signature — what it appeared to correlate with in charts and in history — had almost nothing to do with the mythological Uranus. The sky god Uranus is associated with the status quo, with primordial authority, with the established order being violently disrupted from below — he is the one overthrown, not the overthrower.
+The second objection is the interpretive flexibility problem. Each planetary archetype is defined broadly enough that it could be invoked to explain almost any major historical event. Pluto is transformation, power, death and rebirth. Given these definitions, virtually any significant event involves one or the other. The theory may be unfalsifiable in practice.
 
-The planet's actual signature was precisely the opposite: sudden liberation, revolutionary change, the spark of Promethean fire, the awakener who disrupts sleeping consciousness, the trickster who breaks old forms to usher in the new. This is not Uranus. This is Prometheus.
+The third objection is the mechanism problem. Tarnas disclaims any causal mechanism. The framework he invokes is Jung's synchronicity — but synchronicity is itself deeply contested. Invoking it for a sweeping historical theory may be replacing one mystery with another.
 
-Tarnas makes the case in elegant detail. The Prometheus myth: the Titan who stole fire from the gods and gave it to humanity, enabling civilization, technology, and consciousness. Who was punished by Zeus for this act of transgressive liberation. Who is associated in Aeschylus's drama with prophetic foresight, with rebellion against divine authority, with suffering in service of human advancement.
+What Tarnas actually claims, in his most careful formulations, is modest: that the cosmos appears to be meaningfully patterned, and that this constitutes evidence — not proof — for a participatory view of the universe. He explicitly acknowledges that he could be wrong.` },
 
-The planet Uranus was discovered in 1781 — at the precise historical moment of the American and French Revolutions, the beginning of the Industrial Revolution, the Romantic movement's revolt against Enlightenment rationalism, and the birth of the modern democratic ideal. All of these are Promethean themes: the theft of political power from the gods of the old order, the gift of fire to common humanity, the birth of a new era of consciousness.
+  { part:"Part Four · Critical Engagement", num:"08", title:"Tarnas in the Intellectual Ecosystem", sub:"Grof, Hillman, and participatory philosophy", text:`Lecture Eight: Tarnas in the Intellectual Ecosystem.
 
-Tarnas argues this is not coincidence and not retroactive myth-fitting. It is the same pattern — the Promethean archetype — manifesting simultaneously in political history, cultural life, and the symbolic moment of the planet's discovery.
+The most important figure in Tarnas's intellectual formation is Stanislav Grof. Grof is a Czech-American psychiatrist who conducted extensive clinical research into non-ordinary states of consciousness. His research produced detailed phenomenological maps of the psyche's depths — and those maps are organized around the same planetary archetypes Tarnas uses in his astrological work. Grof found them independently, through clinical observation. This convergence is, for Tarnas, significant independent corroboration.
 
-The essay goes on to trace this archetypal signature through dozens of biographical cases: individuals born with strong Uranus configurations in their natal charts who display characteristically Promethean qualities — sudden, electric, revolutionary creative breakthroughs; trickster energy; the spark that disrupts and awakens.
+James Hillman, the Jungian psychologist who founded archetypal psychology, is the other central influence. Hillman argued that psychology needed to recover a sense of the soul as embedded in a larger world of mythological images. His influence on Tarnas's use of mythological figures is direct and acknowledged.
 
-Whether or not you accept the broader astrological framework, this essay is a genuinely interesting piece of classical scholarship applied to the question of how we name and understand the forces that shape history.`
-  },
-  {
-    part: "Part Four · Critical Engagement",
-    num: "07",
-    title: "The Best Objections",
-    subtitle: "How to push back seriously",
-    text: `Lecture Seven: The Best Objections — How to Push Back Seriously.
+Jorge Ferrer, a philosopher of religion at CIIS, provides Tarnas's epistemological framework. Ferrer's participatory theory of spirituality argues that genuine spiritual knowledge arises through the participation of the human being and the world in a shared event of disclosure. Reality itself, in this view, is not merely what the individual mind projects; it is something that reveals itself through the act of participation.
 
-When the Wall Street Journal reviewed Cosmos and Psyche in 2006, the reviewer compared it to Newton's later alchemical writings — implying senility rather than engaging the argument. That is not a critique; it is a dismissal. Tarnas deserves better opposition than that, because the genuine objections are philosophically interesting.
+This is why Tarnas can claim that planetary archetypes are neither purely subjective projections nor purely objective mechanical forces — they are patterns of meaning that emerge at the intersection of cosmos and consciousness.` },
 
-Let us work through them clearly.
+  { part:"Part Five · How to Read Tarnas", num:"09", title:"Recommended Reading Path", sub:"Sequenced for maximum comprehension", text:`Lecture Nine: Recommended Reading Path.
 
-The first and most significant is the confirmation bias problem. Tarnas selects which historical events to examine. In a work covering five centuries of Western history, there are an enormous number of events, movements, and individuals to choose from. A skeptic must ask: is Tarnas selecting the events that fit his planetary correlations and ignoring or underweighting those that do not? He has thirty years of expertise in this interpretive framework, which means he has an expert's eye for finding the pattern. But an expert eye for pattern-finding is precisely what makes confirmation bias hard to detect from the inside.
+Begin with The Passion of the Western Mind. Read it before anything else. If you have limited time, read at least the Epilogue, which runs about twenty-five pages and is available online. This is the foundation. Without it, the philosophical motivation for Cosmos and Psyche is opaque.
 
-Tarnas is aware of this objection. He responds that the correlations are consistent across dozens of independent cases over five centuries, and that the same archetypal qualities recur in the same planetary conditions repeatedly, in ways that would require an implausibly selective reading to explain away. This is a reasonable response, but it is not a definitive one. A systematic quantitative study — which Tarnas does not provide — would be more convincing.
+Second, read Prometheus the Awakener. It is short — about a hundred pages — and it is the best introduction to how Tarnas actually works with a single planetary archetype. It is more precise and more testable than the broader historical claims of Cosmos and Psyche.
 
-The second objection is the interpretive flexibility problem. Each planetary archetype is defined broadly enough that it could be invoked to explain almost any major historical development. Pluto is "transformation, power, depth, death and rebirth." Uranus-Prometheus is "liberation, awakening, revolution, disruption." Given these definitions, virtually any significant historical event involves one or the other. The theory may be, in Karl Popper's term, unfalsifiable in practice — unable to generate specific predictions that could clearly be disconfirmed.
+Third, read Cosmos and Psyche itself. Do not skip the Introduction and Part One, which lay out the philosophical foundations. The historical case studies in Parts Two through Five are where the real work is done. The case study on the 1960s — which Tarnas analyzes through the Uranus-Pluto conjunction of 1965 to 1966 — is particularly vivid and well-argued.
 
-This is perhaps the sharpest objection. Tarnas would respond that the archetypes, while broad, generate consistent qualitative signatures that are distinguishable from each other — that a Uranus-Pluto period feels different from a Saturn-Neptune period in recognizable and consistent ways. But the line between richly textured interpretation and unfalsifiable post-hoc pattern-matching remains genuinely blurry.
+Fourth, as a philosophical supplement, read Jung's Synchronicity: An Acausal Connecting Principle, published in 1952. Understanding synchronicity in Jung's original formulation will help you assess whether Tarnas uses it carefully or as a conceptual escape hatch.
 
-The third objection is the mechanism problem. Tarnas explicitly disclaims any causal mechanism. He does not claim the planets exert gravitational or electromagnetic effects on human consciousness or history. He claims correlation without mechanism — a pattern of meaningful resonance. The framework he invokes for this is Jung's concept of synchronicity: the idea that events can be meaningfully connected without being causally connected.
+Fifth, for the psychological background, James Hillman's Re-Visioning Psychology from 1975 gives you the archetypal psychology tradition in its most elegant form. Hillman is a better stylist than Tarnas and a more contained thinker — useful corrective.` },
 
-But synchronicity is itself deeply contested. Jung introduced it as a speculative hypothesis to explain apparent meaningful coincidences in his clinical experience. Invoking synchronicity as an explanatory framework for a sweeping historical theory may be replacing one mystery with another.
+  { part:"Part Five · How to Read Tarnas", num:"10", title:"Questions to Hold While Reading", sub:"A framework for active engagement", text:`Lecture Ten: Questions to Hold While Reading.
 
-What Tarnas actually claims, in his most careful formulations, is modest: that the cosmos appears to be meaningfully patterned; that this patterning resonates with human history in ways that are statistically improbable if they are purely coincidental; and that this constitutes evidence — not proof — for a participatory view of the universe. He explicitly acknowledges that he could be wrong.
+What exactly is being claimed? Tarnas makes several distinct claims that need to be evaluated separately: an empirical claim that historical events correlate with planetary positions; an explanatory claim that this reflects meaningful cosmic patterning; a philosophical claim supporting participatory epistemology; and a practical claim that astrological analysis offers genuine insight. These claims do not stand or fall together.
 
-The intellectually honest position is this: the case studies are impressive and the historical correlations are often striking. The methodological foundations are genuinely weak. The philosophical implications, if the correlations hold, would be profound. Serious engagement means holding all three of these things simultaneously.`
-  },
-  {
-    part: "Part Four · Critical Engagement",
-    num: "08",
-    title: "Tarnas in the Intellectual Ecosystem",
-    subtitle: "Grof, Hillman, and participatory philosophy",
-    text: `Lecture Eight: Tarnas in the Intellectual Ecosystem.
+What would count as disconfirming evidence? If the archetypes are defined broadly enough to explain anything, the theory cannot be falsified. Not necessarily fatal for philosophy — but worth pressing.
 
-No thinker exists in isolation. To understand Tarnas properly, it helps to map the intellectual community from which he emerged — because that community both illuminates his project and provides independent grounds for evaluating it.
+Is the participatory epistemology genuine or a rhetorical move to pre-empt criticism? Tarnas argues that the sharp distinction between subjective meaning and objective fact is itself a historically contingent metaphysical position. This is serious philosophy. It can also function to declare the normal rules of evidence inapplicable.
 
-The most important figure in Tarnas's intellectual formation is Stanislav Grof. Grof is a Czech-American psychiatrist who, beginning in the 1950s, conducted extensive clinical research into non-ordinary states of consciousness — first using LSD in carefully controlled therapeutic settings, later developing Holotropic Breathwork as a drug-free alternative. His research produced detailed phenomenological maps of the psyche's depths, including what he called "transpersonal" states: experiences that seem to transcend the individual ego and access something wider — mythological imagery, collective memory, perinatal experience, cosmic consciousness.
+Does the historical analysis depend on the astrological framework? The case studies in Cosmos and Psyche often illuminate intellectual history independent of any astrological conclusions. What is the astrological layer actually adding?
 
-Grof's work is significant for Tarnas in two ways. First, it provided empirical evidence — clinical, not merely philosophical — that the psyche has depths that the standard Western model of consciousness does not adequately account for. Second, Grof's maps of the psyche's depths are organized around archetypal structures: the same planetary archetypes that Tarnas uses in his astrological work. Grof found, independently and through clinical observation, that the same symbolic complexes organized around Saturn, Pluto, Uranus, and Neptune appeared consistently in his patients' deepest experiences. This convergence is, for Tarnas, significant independent corroboration.
+What is the personal meaning of this inquiry for you? Tarnas is not merely offering a theory of history. He is offering a framework for understanding one's own life as embedded in larger cosmic patterns. There is nothing wrong with this — but it is worth being honest about whether you are evaluating the theory or being drawn by the experience.` },
 
-James Hillman, the Jungian psychologist who founded archetypal psychology, is the other central influence. Hillman argued that psychology had become too focused on the individual ego's development and needed to recover a sense of the soul as embedded in a larger world of images and stories — the polytheistic imagination that sees the gods not as supernatural entities but as the fundamental modes in which experience organizes itself.
+  { part:"Part Six · The Archetypal Weather Now", num:"11", title:"The World Transits of Our Moment", sub:"From his February 2024 CIIS lecture", text:`Lecture Eleven: The World Transits of Our Moment.
 
-For Tarnas, Hillman's work licenses the use of mythological figures — Saturn, Prometheus, Neptune, Pluto — as genuine psychological and cosmological principles, not merely convenient labels. The archetypes are real in the sense that they organize experience in consistent, recognizable ways.
+This lecture draws directly from the archetypal weather report Tarnas delivered live at CIIS in February 2024. His framing: we have a particular glass, an archetypal telescope, that gives us remarkable glimpses into the deeper forces and fields that are constellated right now.
 
-Jorge Ferrer, a philosopher of religion at CIIS, provides Tarnas's epistemological framework. Ferrer's participatory theory of spirituality argues that genuine spiritual knowledge is not purely subjective — not just one individual's inner experience — but arises through the participation of the human being and the world in a shared event of disclosure. Reality itself, in this view, is not merely what the individual mind projects onto a neutral substrate; it is something that reveals itself through the act of participation.
+He opened with a characteristic note of philosophical honesty. The planets do not operate in a linear causal mechanistic way. He prefers the language of synchronicity: not that the planets cause what happens on Earth, but that there is an ongoing correspondence between their movements and the archetypal dynamics of human experience. All things breathe together, as Plotinus put it. Everything is symbolically meaningful.
 
-This participatory framework is what allows Tarnas to claim that planetary archetypes are neither purely subjective projections nor purely objective mechanical forces — they are patterns of meaning that emerge at the intersection of cosmos and consciousness.
+On Jupiter-Uranus: he called this probably the most fun among the outer planetary combinations, with the greatest buoyancy. Cosmos and Psyche devotes seventy to eighty pages to it. The history of quantum physics tracks it: Planck in 1900, Bohr and Heisenberg in the late 1920s. Beethoven's Eroica. Joni Mitchell's first albums. The moon landing. The fall of the Berlin Wall. Jobs and Wozniak in a Palo Alto garage in 1975 — a hidden birth, nobody knowing what would come of it. He was direct: you don't want to sleep through it.
 
-Whether you find this compelling depends, in part, on how seriously you take the broader crisis of meaning that The Passion of the Western Mind diagnoses in the modern world. If you share Tarnas's sense that scientific materialism has generated a profound metaphysical impoverishment — that the "disenchanted" universe is not merely wrong but existentially insufficient — then his project will seem more urgent. If you are comfortable with a world of meaningless mechanism, it will seem like elaborate wishful thinking.`
-  },
-  {
-    part: "Part Five · How to Read Tarnas",
-    num: "09",
-    title: "Recommended Reading Path",
-    subtitle: "Sequenced for maximum comprehension",
-    text: `Lecture Nine: Recommended Reading Path.
+On Saturn-Neptune, building through 2025 and 2026: a more sobering combination. It can produce democracy fatigue — discouragement at the gap between ideal and reality. Historically has coincided with war exhaustion: the final years of World War One, of World War Two, of Vietnam. At its best: focused consciousness, spiritual practice, healing work. He invoked the Dalai Lama and Martin Luther King as Saturn-Neptune archetypes — bringing the dream into costly, sustained concrete expression.
 
-Having surveyed the intellectual landscape of Tarnas's work, let me recommend how to actually read it — in what order, with what expectations, and with what questions in mind.
+He ended with Tolkien. Frodo says: I wish it need not have happened in my time. Gandalf replies: So do I. But that is not for them to decide. All we have to decide is what to do with the time that is given us. That, Tarnas said, is where we are.` },
 
-Begin with The Passion of the Western Mind. Read it before anything else. If you have limited time, read at least the Epilogue — which is available online and runs about twenty-five pages. This is the foundation. Without it, the philosophical motivation for Cosmos and Psyche is opaque, and the astrological framework appears to emerge from nowhere.
+  { part:"Part Six · The Archetypal Weather Now", num:"12", title:"How to Use This in Your Own Life", sub:"Personal transits and conscious participation", text:`Lecture Twelve: How to Use This in Your Own Life — Personal Transits and Conscious Participation.
 
-As you read Passion of the Western Mind, pay particular attention to Tarnas's account of the Scientific Revolution. Not as a critique of science — Tarnas is not anti-scientific — but as a history of a particular metaphysical move: the elevation of the Cartesian subject-object divide from a useful methodological tool to an absolute metaphysical principle. This is the problem his later work is a response to.
+The first distinction Tarnas always makes is between world transits and personal transits. World transits — Jupiter-Uranus, Saturn-Neptune, the American Pluto and Uranus returns — describe the archetypal field that everyone on Earth is living inside, regardless of when they were born. They are the weather of the era. Personal transits describe how the currently moving planets are interacting with the specific positions of the planets at the moment of your birth. Both matter.
 
-Second, read Prometheus the Awakener. It is short — about a hundred pages — and it is the best introduction to how Tarnas actually works with a single planetary archetype. It is more precise and more testable than the broader historical claims of Cosmos and Psyche, and it gives you a feel for his methodology before you encounter it at scale.
+During a Jupiter-Uranus conjunction, his advice was unusually direct. If you have been gestating a creative project — a book, a dissertation, a new direction in your work — this is the period when the archetypal field is most supportive of bringing it forward. He said: you don't want to sleep through it. The shadow is inflation; bring discernment with the enthusiasm. But use the wind.
 
-Third, read Cosmos and Psyche. Do not skip the Introduction and Part One, which lay out the philosophical foundations. The historical case studies in Parts Two through Five are where the real work is done — and they reward careful reading even if you remain skeptical of the overarching theory. The case study on the 1960s, which Tarnas analyzes through the Uranus-Pluto conjunction of 1965 to 1966, is particularly vivid and well-argued.
+During a Saturn-Neptune conjunction, the call is different. This is a period when more people feel the pull toward psychotherapy, spiritual practice, sustained inner work. The people who thrive historically are those who can hold both the real and the ideal — who work hard in service of something that matters spiritually.
 
-Fourth, as a philosophical supplement, read Jung's "Synchronicity: An Acausal Connecting Principle," published in 1952. It is dense — Jung at his most metaphysically ambitious — but it is the direct source of the explanatory framework Tarnas relies on. Understanding synchronicity in Jung's original formulation will help you assess whether Tarnas is using it carefully or leaning on it as a conceptual escape hatch.
+The deeper point Tarnas returns to again and again is the difference between being unconscious of the archetypal field you are in — being, in his phrase, a puppet of the archetypal powers — and being a conscious participant in it. Not mastery or control. Awareness. Knowing the kind of weather you are in so you can move within it skillfully.
 
-Fifth, for the psychological background, James Hillman's Re-Visioning Psychology from 1975 gives you the archetypal psychology tradition in its most elegant form. Hillman is a better prose stylist than Tarnas and a more contained thinker — reading him first can actually help clarify what Tarnas is doing.
-
-Finally, for those who want to go deeper into Tarnas's ongoing work, the journal Archai: The Journal of Archetypal Cosmology, founded in 2008 and edited by Keiron Le Grice, publishes scholarly work in the tradition Tarnas established. It is available online and represents the living edge of this research community.`
-  },
-  {
-    part: "Part Five · How to Read Tarnas",
-    num: "10",
-    title: "Questions to Hold While Reading",
-    subtitle: "A framework for active engagement",
-    text: `Lecture Ten: Questions to Hold While Reading — A Framework for Active Engagement.
-
-This final lecture offers not conclusions but questions — the questions that will help you engage with Tarnas seriously rather than either dismissing him or accepting him uncritically.
-
-The first question: What exactly is being claimed? This sounds obvious, but it requires care. Tarnas makes several distinct claims that need to be evaluated separately. There is the empirical claim — that historical events correlate with planetary positions. There is the explanatory claim — that this correlation reflects a meaningful pattern in the cosmos, not mere coincidence. There is the philosophical claim — that this supports a participatory view of the universe. And there is the practical claim — that astrological analysis can offer genuine insight into personal and historical experience. These claims do not stand or fall together. You might accept the empirical correlations while rejecting the philosophical conclusion, or find the philosophical framework compelling while remaining uncertain about the empirical case.
-
-The second question: What would count as disconfirming evidence? Ask yourself seriously: is there any configuration of historical evidence that would lead Tarnas to abandon his theory? If the archetypes are defined broadly enough to explain anything, the theory cannot be falsified — and an unfalsifiable theory, however interesting philosophically, is not a scientific hypothesis. This is not necessarily a fatal objection — philosophy is not science — but it is a question worth pressing.
-
-The third question: Is the participatory epistemology a genuine philosophical position, or a rhetorical move to pre-empt criticism? Tarnas argues that the sharp distinction between subjective meaning and objective fact — the very distinction that makes astrology seem absurd to a modern scientific mind — is itself a product of a particular historical metaphysics that may be wrong. This is a philosophically serious argument. But it can also function as a way of declaring the normal rules of evidence inapplicable. Hold both possibilities open.
-
-The fourth question: Does the quality of the historical analysis depend on the astrological framework? The case studies in Cosmos and Psyche are often genuinely illuminating as intellectual history, independent of any astrological conclusions. Would they be less interesting — or differently interesting — if you removed the planetary correlations? If the historical analysis stands on its own, what is the astrological layer actually adding?
-
-The fifth question: What is the personal meaning of this inquiry for you? Tarnas is not merely offering a theory of history. He is offering a framework for understanding one's own life as embedded in larger cosmic patterns. For many readers, this is the real draw — not the scholarly argument but the experiential invitation to see one's life as meaningful in a deeper sense. There is nothing wrong with this. But it is worth being honest about whether you are evaluating the theory or being drawn by the experience.
-
-These questions will not produce easy answers. But they will ensure that your engagement with Richard Tarnas — whatever your conclusions — is worthy of his thirty years of labor.
-
-Thank you for completing this course. Cosmos and Psyche remains a living question.`
-  },
-  {
-    part: "Part Six · The Archetypal Weather Now",
-    num: "11",
-    title: "The World Transits of Our Moment",
-    subtitle: "Drawn from Tarnas's 2024 CIIS lecture",
-    text: `Lecture Eleven: The World Transits of Our Moment.
-
-This lecture draws directly from the archetypal weather report Tarnas delivered live at CIIS in February 2024 — the most recent of a series he has given periodically since 2020. These are his words, his examples, and his framing, rendered here as closely as possible to how he actually speaks.
-
-He opened with a characteristic note of philosophical honesty about what this kind of inquiry is and is not. The planets, he said, do not operate in a linear causal mechanistic way — as if they are simply material objects influencing the Earth like gravity or electromagnetic radiation. He prefers to understand the phenomenon through the language that Plotinus and Jung both use: synchronicity. Not that the planets cause what happens on Earth, but that there is an ongoing correspondence — a correlation — between the movements of the planets and the movements of the archetypal dynamics of human experience. Everything is interconnected, as Plotinus put it: all things breathe together. Everything is symbolically meaningful.
-
-He was also explicit that the framework is not deterministic. The archetypes are powerful, numinous, they shape and inform things from both the interior psyche and the outer world. But it is the very nature of archetypes that they can be enacted in many different ways — all faithful to the core essence of the principle, and all open to multiple expressions. This is where human responsibility and human freedom play a crucial role. Astrology, as Tarnas practices it, is not concretely predictive. It is archetypally predictive. And the more consciousness we bring to the table — the more self-awareness, courage, intelligence, and imagination — the more freedom and skillfulness we can bring to participating in the archetypal forces moving through and around us.
-
-With that framing in place, he turned to the world transits themselves. The two most significant in immediate view, he said, are the Jupiter-Uranus conjunction and the Saturn-Neptune conjunction.
-
-On Jupiter-Uranus: he called this probably the most fun among the outer planetary combinations, with the greatest buoyancy. The conjunction had first come into orb in the summer before the lecture, was reaching its tightest alignment in the spring of 2024, and would carry through that summer. The historical correlations across the centuries are, in his word, dazzling. Cosmos and Psyche devotes seventy to eighty pages to the Jupiter-Uranus cycle — artistic and scientific breakthroughs, cultural milestones, quantum leaps in every domain of human endeavor. The history of quantum physics is remarkably connected to this cycle: Max Planck's foundational work in 1900, then Bohr's principle of complementarity and Heisenberg's uncertainty principle in the late 1920s, both under Jupiter-Uranus conjunctions. Beethoven's Eroica Symphony. Joni Mitchell's first albums. The fall of the Berlin Wall. The moon landing. The first Harry Potter publication in 1997. Steve Jobs and Steve Wozniak beginning their work in a garage in Palo Alto under the 1975-76 conjunction — a hidden birth, nobody knowing at the time what would come of it.
-
-He was careful about the shadow. Jupiter-Uranus can generate inflation, overexpansion, a confidence that outpaces the foundations. Anything inflated too much, he noted, is going to get deflated — and that is where Saturn comes in. The wisdom, as always with Tarnas, is in holding the archetype consciously rather than being possessed by it.
-
-On Saturn-Neptune, entering its major phase through 2025 and 2026: this is a more sobering and complex combination. Saturn is structure, concrete reality, limitation, the hard facts. Neptune is the spiritual, the imaginative, the infinite, that which is transcendent and interpenetrating. Their conjunction can bring a dark night of the soul. It can increase anxiety. It can produce what he called democracy fatigue — a sense of discouragement about how far reality is from the ideal, a demoralization that he noted has coincided historically with the final years of wars: World War One in 1916 to 1919, World War Two in 1943 to 1945, Vietnam under the Saturn-Neptune opposition of the early 1970s.
-
-But the positive face of this conjunction is equally real and equally well-documented. Saturn-Neptune at its best is extraordinary for focused consciousness, nuanced awareness, psychological depth, and spiritual practice. He invoked the Dalai Lama, who has Saturn-Neptune powerfully configured in his natal chart — someone who has faced the loss of the ideal, the loss of the world he was raised in, and responded not with despair but with a sustained call for meditation, compassion, and the concrete cultivation of virtue. Martin Luther King had Saturn trine Neptune in a grand trine with Jupiter — the entire arc of his life was the effort to bring the ideal down into concrete, costly, sustained expression. I have a dream, brought into the streets.
-
-The two great themes of the Saturn-Neptune combination, in his reading: the capacity to pull back the veil of propaganda, spin, and collective delusion — he mentioned Jonathan Swift, the young Jon Stewart returning to The Daily Show precisely as this transit was building — and the call toward genuine spiritual practice, healing work, and service to the suffering.
-
-He then turned to the American dimension, which he described as unusually significant for the whole world. The United States is going through two simultaneous returns — its Pluto return, the first in the nation's history since Pluto takes 248 years to orbit the Sun, and its Uranus return, the third, since Uranus completes its cycle in 84 years. The first American Uranus return coincided with the Civil War. The second with World War Two and the emergence of the US as a global superpower. We are now at the beginning of the third.
-
-The Pluto return, he said, correlates with the kind of deep decay or destruction of existing conditions, beliefs, and structures that requires genuine transformation rather than just renovation. He did not shy away from naming the Trump phenomenon as archetypally Plutonic — characteristic of the underworld dimension of that archetype, its power-struggle dynamics, its pull toward life-and-death urgency. But he held both faces. Pluto also brings the shamanic descent and return, the encounter with the shadow that is absolutely necessary for any genuine psychospiritual growth. The United States, he said, is having to face its shadow as never before. That is painful. It is also, in the archetypal logic, the precondition for anything real to grow on the other side.
-
-He ended with a passage from Tolkien that his daughter Rebecca had shared with him, which he had returned to in several of his recent talks. Frodo says to Gandalf: I wish it need not have happened in my time. And Gandalf replies: So do I, and so do all who live to see such times. But that is not for them to decide. All we have to decide is what to do with the time that is given us.
-
-That, he said, is where we are.`
-  },
-  {
-    part: "Part Six · The Archetypal Weather Now",
-    num: "12",
-    title: "How to Use This in Your Own Life",
-    subtitle: "Personal transits and conscious participation",
-    text: `Lecture Twelve: How to Use This in Your Own Life — Personal Transits and Conscious Participation.
-
-Tarnas is often asked, at the end of his world transit lectures, what people should actually do with this information. This lecture addresses that question directly, drawing on what he said in the Q&A of his 2024 CIIS talk and on the consistent thread of his thinking across many years.
-
-The first thing to understand is the difference between world transits and personal transits. Everything discussed in the previous lecture — the Jupiter-Uranus conjunction, the Saturn-Neptune conjunction, the American Pluto and Uranus returns — these are world transits. They describe the archetypal field that everyone on Earth is living inside, regardless of when they were born. They are like the weather of the era: you can be more or less prepared for it, but you are in it.
-
-Personal transits are different. They describe how the currently moving planets are interacting with the specific positions of the planets at the moment of your birth. And they are specific to you in a way that world transits are not. Tarnas in the 2024 lecture was direct about this: all of you out there are going to have personal transits of all different types that he cannot know about, because they are just specific to each person. Someone might have Uranus conjoining their natal Jupiter right now, or Saturn moving over their Moon. Those personal transits are real and significant — and they interact with the world transits in ways that can either amplify or complicate them.
-
-This is why Tarnas consistently recommends working with a skilled archetypal astrologer for personal chart work rather than trying to derive everything from world-level analysis. The world transits are the territory everyone shares. Your natal chart is your particular relationship to that territory.
-
-With that distinction in place, he offered some concrete guidance about what the current world transits call for in individual lives.
-
-During a Jupiter-Uranus conjunction, the advice he gave was unusually direct. If you have been thinking about starting a creative project, this is the time. If you have been gestating something — a book, a dissertation, a new direction in your work — this is the period when the archetypal field is most supportive of launching it into the world. The energy is buoyant, liberating, favorable to breakthroughs. Use it. He added one caveat: the shadow of Jupiter-Uranus is inflation. The same energy that makes you feel you can do anything can make you overextend. Bring discernment along with the enthusiasm.
-
-During a Saturn-Neptune conjunction, the call is different. This is a period when more people feel the pull toward psychotherapy, toward spiritual practice, toward the kind of serious inner work that requires sustained commitment rather than episodic bursts of inspiration. The conjunction brings a productive tension between the real and the ideal — Saturn pressing Neptune toward concrete expression, Neptune pressing Saturn toward depth and vision. The people who thrive in this period, historically, are those who can hold both: who work hard and seriously in service of something that matters spiritually. King. The Dalai Lama. The hospice worker. The therapist. The activist who keeps going without illusion about how difficult it is.
-
-He also offered a more personal reflection on what it means to engage these forces consciously rather than unconsciously. He spoke about becoming, in his phrase, less like puppets and more like co-creative participants in relation to the archetypal powers within and around us. This is not a call to master or control the archetypes. The archetypes are, in his view, far larger than the individual human will. It is rather a call to awareness — to knowing the kind of weather you are in so that you can move within it skillfully rather than being simply pushed around by it.
-
-He made a point that James Hillman also emphasized: the archetypes are not only sources of difficulty and challenge. They are also the sources of meaning that enrich and elevate our lives, that inform our imagination and shape our experience in so many ways. Saturn is not merely limitation — it is also the capacity for sustained work, for integrity, for the kind of hardness that allows something to endure. Uranus-Prometheus is not merely chaos and disruption — it is also the spark that liberates, the trickster that breaks open what has become too rigid, the Promethean fire that makes civilization possible.
-
-The goal, in Tarnas's consistent framing, is a kind of symbolic literacy: the capacity to read the archetypal field you are in and to engage it consciously. This is what the entire edifice of archetypal astrology is for, in his view — not to predict the future with mechanical precision, but to orient us in the present, to help us understand what kind of moment we are living in, and to make it possible for us to bring something intentional to the forces that are moving through us.
-
-He closed the 2024 lecture with a thought about the cosmos itself. The fact that we are capable of this kind of symbolic discernment — that the moving geometry of the solar system is intelligible to us in this deep way — is not, in his view, accidental. It reflects something about the relationship between the cosmos and the human mind. The cosmos is not simply a mechanical backdrop against which human drama unfolds. It is, in some sense he finds difficult to render in language without overstating it, in conversation with us. The language of the anima mundi — the soul of the world — is a language that the human soul can read. That, for him, is the most fundamental claim of his entire life's work. And that is where he leaves us: not with certainty, but with the invitation to take our symbolic capacities seriously, to develop them, and to bring them to bear on the extraordinarily consequential moment we are living in together.`
-  }
+He closed with a thought about the cosmos itself. The fact that we are capable of this kind of symbolic discernment — that the moving geometry of the solar system is intelligible to us in this deep way — is not, in his view, accidental. The language of the soul of the world is a language the human soul can read. That, for him, is the most fundamental claim of his entire life's work. Not certainty. But an invitation: take your symbolic capacities seriously, and bring them to bear on the extraordinary moment we are all living in together.` }
 ];
 
-let currentTrack = 0;
-let isPlaying = false;
-let synth = window.speechSynthesis;
-let utterance = null;
-let voices = [];
-let selectedVoice = null;
+// ── AUDIO ENGINE ──────────────────────────────────────
+let cur = 0;
+let audio = new Audio();
 let speed = 1.0;
-const speeds = [0.8, 1.0, 1.25, 1.5];
-let speedIdx = 1;
+const speeds = [0.75, 1.0, 1.25, 1.5];
+let sIdx = 1;
 
-// Progress tracking
-let wordTokens = [];
-let wordIndex = 0;
-let charOffset = 0;
-let progressInterval = null;
-let startTime = null;
-let totalEstimatedMs = 0;
-let pausedAt = 0;
-let elapsedBeforePause = 0;
+audio.addEventListener('timeupdate', () => {
+  if (!audio.duration) return;
+  document.getElementById('prog-fill').style.width = (audio.currentTime / audio.duration * 100) + '%';
+  document.getElementById('t-cur').textContent = fmt(audio.currentTime);
+});
+audio.addEventListener('loadedmetadata', () => {
+  document.getElementById('t-dur').textContent = fmt(audio.duration);
+});
+audio.addEventListener('ended', () => {
+  setPlayBtn(false);
+  document.querySelectorAll('.track').forEach(t => t.classList.remove('playing'));
+  if (cur < TRACKS.length - 1) {
+    setTimeout(() => { selectTrack(cur + 1); audio.play(); setPlayBtn(true); }, 500);
+  }
+});
+audio.addEventListener('error', () => {
+  console.warn('Audio error for track', cur);
+});
 
-function loadVoices() {
-  voices = synth.getVoices().filter(v => v.lang.startsWith('en'));
-  const sel = document.getElementById('voice-select');
-  if (!sel) return;
-  sel.innerHTML = '';
-  voices.forEach((v, i) => {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = v.name + (v.default ? ' ★' : '');
-    sel.appendChild(opt);
-    if (!selectedVoice && (v.name.toLowerCase().includes('daniel') || v.name.toLowerCase().includes('alex') || v.name.toLowerCase().includes('karen') || v.default)) {
-      selectedVoice = v;
-      sel.value = i;
-    }
-  });
-  if (!selectedVoice && voices.length) selectedVoice = voices[0];
+function fmt(s) {
+  if (!s || isNaN(s)) return '0:00';
+  return Math.floor(s/60) + ':' + String(Math.floor(s%60)).padStart(2,'0');
 }
 
-synth.addEventListener('voiceschanged', loadVoices);
-loadVoices();
+function setPlayBtn(playing) {
+  document.getElementById('btn-play').innerHTML = playing ? '&#9646;&#9646;' : '&#9654;';
+}
 
+// ── SIDEBAR ───────────────────────────────────────────
 function buildSidebar() {
   const sb = document.getElementById('sidebar');
-  let currentPart = '';
+  let lastPart = '';
   let html = '';
   TRACKS.forEach((t, i) => {
-    if (t.part !== currentPart) {
-      currentPart = t.part;
-      html += `<div class="part-label">${t.part}</div>`;
+    if (t.part !== lastPart) {
+      lastPart = t.part;
+      html += `<div class="part-header">${t.part}</div>`;
     }
-    const wc = t.text.split(/\s+/).length;
-    const mins = Math.round(wc / 150);
-    html += `<div class="track-item" id="ti-${i}" onclick="selectTrack(${i})">
+    const wpm = 145, wc = t.text.split(/\s+/).length;
+    const mins = Math.ceil(wc / wpm);
+    html += `<div class="track" id="tr-${i}" onclick="selectTrack(${i})">
       <span class="track-num">${t.num}</span>
-      <div class="track-info">
+      <div class="track-body">
         <div class="track-title">${t.title}</div>
-        <div class="track-subtitle">${t.subtitle}</div>
-        <div class="track-dur">~${mins} min</div>
+        <div class="track-sub">${t.sub}</div>
+        <div class="track-dur">${mins} min</div>
       </div>
-      <span class="play-indicator"></span>
+      <span class="track-indicator"></span>
     </div>`;
   });
   sb.innerHTML = html;
 }
 
-function renderModule(idx) {
+// ── LECTURE VIEW ──────────────────────────────────────
+function renderLecture(idx) {
   const t = TRACKS[idx];
-  const display = document.getElementById('module-display');
-
-  // Build word-span version of text
   const paras = t.text.split('\n\n').filter(p => p.trim());
-  let wordHtml = '';
-  let wIdx = 0;
-  wordTokens = [];
-  charOffset = 0;
+  const html = paras.map(p => `<p>${p.trim()}</p>`).join('');
 
-  paras.forEach(para => {
-    const words = para.trim().split(/(\s+)/);
-    let paraHtml = '<p>';
-    words.forEach(token => {
-      if (/\S/.test(token)) {
-        const wi = wIdx++;
-        wordTokens.push({ token, idx: wi });
-        paraHtml += `<span class="word" id="w${wi}">${token}</span>`;
-      } else {
-        paraHtml += token;
-      }
-    });
-    paraHtml += '</p>';
-    wordHtml += paraHtml;
-  });
+  document.getElementById('empty-state').style.display = 'none';
+  const lc = document.getElementById('lecture-content');
+  lc.style.display = 'block';
+  lc.innerHTML = `
+    <div class="lv-eyebrow">${t.part}</div>
+    <div class="lv-title">${t.title}</div>
+    <div class="lv-subtitle">${t.sub}</div>
+    <div class="lv-divider"></div>
+    <div class="lv-transcript-label">Transcript</div>
+    <div class="lv-transcript">${html}</div>`;
 
-  display.innerHTML = `
-    <div class="module-part">${t.part}</div>
-    <div class="module-title-main">${t.title.includes('The Passion') || t.title.includes('Cosmos') || t.title.includes('Prometheus') ? '<em>' + t.title + '</em>' : t.title}</div>
-    <div class="module-hook-main">${t.subtitle}</div>
-    <div style="margin-bottom:1rem;">
-      <div class="voice-select-row">
-        <label for="voice-select">Voice</label>
-        <select id="voice-select" onchange="changeVoice(this.value)"></select>
-      </div>
-    </div>
-    <div class="transcript-label">Transcript</div>
-    <div class="transcript-text" id="transcript-text">${wordHtml}</div>
-  `;
-  loadVoices();
-  document.getElementById('np-title').textContent = `${t.num} — ${t.title}`;
-  estimateDuration(t.text);
+  // Scroll main to top
+  document.getElementById('main').scrollTop = 0;
+
+  // Player info
+  document.getElementById('p-num').textContent = `Lecture ${t.num}`;
+  document.getElementById('p-title').textContent = t.title;
+  document.getElementById('p-sub').textContent = t.sub;
+  document.getElementById('lec-counter').textContent = `${parseInt(t.num)} / ${TRACKS.length}`;
 }
 
-function estimateDuration(text) {
-  const wordCount = text.split(/\s+/).length;
-  const wpm = 150 * speed;
-  totalEstimatedMs = (wordCount / wpm) * 60000;
-  const mins = Math.floor(totalEstimatedMs / 60000);
-  const secs = Math.floor((totalEstimatedMs % 60000) / 1000);
-  document.getElementById('time-total').textContent = `~${mins}:${secs.toString().padStart(2,'0')}`;
-}
-
+// ── TRACK SELECTION ───────────────────────────────────
 function selectTrack(idx) {
-  stopAudio();
-  currentTrack = idx;
-  wordIndex = 0;
-  elapsedBeforePause = 0;
-  document.querySelectorAll('.track-item').forEach(el => el.classList.remove('active', 'playing'));
-  document.getElementById(`ti-${idx}`).classList.add('active');
-  renderModule(idx);
-  document.getElementById('progress-fill').style.width = '0%';
-  document.getElementById('time-current').textContent = '0:00';
-  document.getElementById('btn-play').innerHTML = '&#9654;';
-  isPlaying = false;
+  const wasPlaying = !audio.paused;
+  audio.pause();
+  cur = idx;
+
+  document.querySelectorAll('.track').forEach(t => t.classList.remove('active', 'playing'));
+  const el = document.getElementById(`tr-${idx}`);
+  if (el) {
+    el.classList.add('active');
+    el.scrollIntoView({ block: 'nearest' });
+  }
+
+  audio.src = `audio/lecture_${TRACKS[idx].num}.mp3`;
+  audio.load();
+  audio.playbackRate = speed;
+
+  document.getElementById('prog-fill').style.width = '0%';
+  document.getElementById('t-cur').textContent = '0:00';
+  document.getElementById('t-dur').textContent = '—';
+  setPlayBtn(false);
+
+  renderLecture(idx);
+
+  if (wasPlaying) { audio.play(); setPlayBtn(true); el && el.classList.add('playing'); }
 }
 
-function changeVoice(idx) {
-  selectedVoice = voices[parseInt(idx)];
-  if (isPlaying) {
-    const wasPlaying = true;
-    stopAudio();
-    if (wasPlaying) playAudio();
+// ── CONTROLS ──────────────────────────────────────────
+function togglePlay() {
+  if (!audio.src || audio.src.endsWith('undefined')) { selectTrack(0); }
+  if (audio.paused) {
+    audio.play();
+    setPlayBtn(true);
+    document.getElementById(`tr-${cur}`)?.classList.add('playing');
+  } else {
+    audio.pause();
+    setPlayBtn(false);
+    document.getElementById(`tr-${cur}`)?.classList.remove('playing');
   }
 }
 
 function cycleSpeed() {
-  speedIdx = (speedIdx + 1) % speeds.length;
-  speed = speeds[speedIdx];
+  sIdx = (sIdx + 1) % speeds.length;
+  speed = speeds[sIdx];
+  audio.playbackRate = speed;
   document.getElementById('btn-speed').textContent = speed + '×';
-  estimateDuration(TRACKS[currentTrack].text);
-  if (isPlaying) {
-    const elapsed = elapsedBeforePause + (Date.now() - startTime);
-    elapsedBeforePause = elapsed;
-    stopAudio(true);
-    playAudio(true);
-  }
-}
-
-function togglePlay() {
-  if (!isPlaying) {
-    playAudio();
-  } else {
-    pauseAudio();
-  }
-}
-
-function playAudio(resume) {
-  if (synth.speaking && !synth.paused) return;
-  const t = TRACKS[currentTrack];
-
-  if (synth.paused) {
-    synth.resume();
-    isPlaying = true;
-    startTime = Date.now();
-    startProgressTimer();
-    document.getElementById('btn-play').innerHTML = '&#9646;&#9646;';
-    document.getElementById(`ti-${currentTrack}`).classList.add('playing');
-    return;
-  }
-
-  utterance = new SpeechSynthesisUtterance(t.text);
-  utterance.rate = speed;
-  utterance.pitch = 1.0;
-  utterance.volume = 1.0;
-  if (selectedVoice) utterance.voice = selectedVoice;
-
-  utterance.onboundary = (e) => {
-    if (e.name === 'word') {
-      highlightWord(e.charIndex);
-    }
-  };
-
-  utterance.onend = () => {
-    isPlaying = false;
-    stopProgressTimer();
-    document.getElementById('btn-play').innerHTML = '&#9654;';
-    document.getElementById('progress-fill').style.width = '100%';
-    document.querySelectorAll('.track-item').forEach(el => el.classList.remove('playing'));
-    clearHighlights();
-    if (currentTrack < TRACKS.length - 1) {
-      setTimeout(() => { selectTrack(currentTrack + 1); playAudio(); }, 800);
-    }
-  };
-
-  utterance.onerror = () => {
-    isPlaying = false;
-    stopProgressTimer();
-    document.getElementById('btn-play').innerHTML = '&#9654;';
-  };
-
-  synth.speak(utterance);
-  isPlaying = true;
-  startTime = Date.now();
-  startProgressTimer();
-  document.getElementById('btn-play').innerHTML = '&#9646;&#9646;';
-  document.getElementById(`ti-${currentTrack}`).classList.add('playing');
-}
-
-function pauseAudio() {
-  if (synth.speaking && !synth.paused) {
-    synth.pause();
-    elapsedBeforePause += Date.now() - startTime;
-    isPlaying = false;
-    stopProgressTimer();
-    document.getElementById('btn-play').innerHTML = '&#9654;';
-    document.getElementById(`ti-${currentTrack}`).classList.remove('playing');
-  }
-}
-
-function stopAudio(silent) {
-  synth.cancel();
-  isPlaying = false;
-  stopProgressTimer();
-  if (!silent) {
-    document.getElementById('btn-play').innerHTML = '&#9654;';
-    document.querySelectorAll('.track-item').forEach(el => el.classList.remove('playing'));
-    clearHighlights();
-    elapsedBeforePause = 0;
-  }
-}
-
-function highlightWord(charIdx) {
-  clearHighlights();
-  // Find word span closest to charIdx
-  const text = TRACKS[currentTrack].text;
-  let count = 0;
-  const words = text.split(/\s+/);
-  let pos = 0;
-  let targetWord = 0;
-  for (let i = 0; i < words.length; i++) {
-    if (pos >= charIdx) { targetWord = i; break; }
-    pos += words[i].length + 1;
-    targetWord = i;
-  }
-  const el = document.getElementById('w' + targetWord);
-  if (el) {
-    el.classList.add('highlight');
-    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-}
-
-function clearHighlights() {
-  document.querySelectorAll('.word.highlight').forEach(el => el.classList.remove('highlight'));
-}
-
-function startProgressTimer() {
-  stopProgressTimer();
-  progressInterval = setInterval(updateProgress, 300);
-}
-
-function stopProgressTimer() {
-  if (progressInterval) { clearInterval(progressInterval); progressInterval = null; }
-}
-
-function updateProgress() {
-  if (!isPlaying || !startTime) return;
-  const elapsed = elapsedBeforePause + (Date.now() - startTime);
-  const pct = Math.min(100, (elapsed / totalEstimatedMs) * 100);
-  document.getElementById('progress-fill').style.width = pct + '%';
-  const secs = Math.floor(elapsed / 1000);
-  const m = Math.floor(secs / 60);
-  const s = secs % 60;
-  document.getElementById('time-current').textContent = m + ':' + s.toString().padStart(2,'0');
 }
 
 function seekTo(e) {
-  const bar = document.getElementById('progress-bar');
-  const rect = bar.getBoundingClientRect();
-  const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-  elapsedBeforePause = pct * totalEstimatedMs;
-  document.getElementById('progress-fill').style.width = (pct * 100) + '%';
-  const secs = Math.floor(elapsedBeforePause / 1000);
-  const m = Math.floor(secs / 60);
-  const s = secs % 60;
-  document.getElementById('time-current').textContent = m + ':' + s.toString().padStart(2,'0');
-  if (isPlaying) {
-    stopAudio(true);
-    playAudio(true);
-  }
+  if (!audio.duration) return;
+  const r = document.getElementById('prog-track').getBoundingClientRect();
+  audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * audio.duration;
 }
 
-function prevTrack() {
-  if (currentTrack > 0) { selectTrack(currentTrack - 1); }
-}
+function prevTrack() { if (cur > 0) selectTrack(cur - 1); }
+function nextTrack() { if (cur < TRACKS.length - 1) selectTrack(cur + 1); }
 
-function nextTrack() {
-  if (currentTrack < TRACKS.length - 1) { selectTrack(currentTrack + 1); }
-}
-
-// Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-  const tag = document.activeElement.tagName;
-  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+// ── KEYBOARD ──────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
   if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
-  if (e.code === 'ArrowRight' && !e.shiftKey) nextTrack();
-  if (e.code === 'ArrowLeft' && !e.shiftKey) prevTrack();
-  if (e.key === '>') { speedIdx = (speedIdx+1)%speeds.length; speed=speeds[speedIdx]; document.getElementById('btn-speed').textContent=speed+'×'; estimateDuration(TRACKS[currentTrack].text); }
+  if (e.code === 'ArrowRight') nextTrack();
+  if (e.code === 'ArrowLeft') prevTrack();
+  if (e.key === '>') cycleSpeed();
 });
 
-// Cross-link notice in sidebar header
-const crossLink = document.createElement('div');
-crossLink.style.cssText = 'padding:0.8rem 1.4rem; font-family:"DM Mono",monospace; font-size:0.58rem; letter-spacing:0.08em; color:rgba(74,68,96,0.9); border-bottom:1px solid rgba(200,169,110,0.15); line-height:1.5;';
-crossLink.innerHTML = 'Also available:<br><span style="color:rgba(107,143,163,0.8);">tarnas_astrology_course.html</span><br>Reading version with notes &amp; progress tracker';
-document.getElementById('sidebar').prepend(crossLink);
-
-// Init
+// ── INIT ──────────────────────────────────────────────
 buildSidebar();
 selectTrack(0);
 </script>
